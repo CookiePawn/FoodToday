@@ -1,125 +1,164 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+// CirclePulse.tsx
 import React from 'react';
-import type { PropsWithChildren } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-import Config from 'react-native-config';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import Svg, { Circle, Path, G } from 'react-native-svg';
+import Animated, {
+  useSharedValue,
+  useAnimatedProps,
+  withTiming,
+  runOnJS,
+} from 'react-native-reanimated';
+import MapPinIcon from '@/assets/icons/map-pin.svg';
+import { UserIcon } from '@/assets';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+// 애니메이션 값 정의
+const startRadius = 200;
+const startOpacity = 1;
+const maxRadius = screenWidth * 0.8; // 화면 너비 기준
+const maxRadius2 = maxRadius * 1.3;
+const firstCircleDuration = 1500;
+const secondCircleDuration = 2100;
 
-function Section({ children, title }: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const iconSize = 40;
+// Icon 위치: 화면 하단 중앙 (하단에서 100 위)
+const iconBottom = 100;
+const iconLeft = screenWidth / 2 - iconSize / 2;
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const CirclePulse = () => {
+  const radius1 = useSharedValue(startRadius);
+  const opacity1 = useSharedValue(startOpacity);
+  const radius2 = useSharedValue(startRadius);
+  const opacity2 = useSharedValue(0);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // 원의 중심 좌표 (화면 좌표 기준)
+  const centerX = screenWidth / 2;
+  const centerY = screenHeight - 100;
+
+  // 애니메이션 시퀀스를 반복하기 위한 상태 (예: 카운터 사용)
+  const [animationCounter, setAnimationCounter] = React.useState(0);
+
+  const resetAndRestartAnimation = () => {
+    'worklet';
+    // 상태 리셋 (opacity1 포함)
+    radius1.value = startRadius;
+    opacity1.value = startOpacity; // Reset opacity1
+    radius2.value = startRadius;
+    opacity2.value = 0;
+    runOnJS(setAnimationCounter)(prev => prev + 1);
   };
 
+  React.useEffect(() => {
+    'worklet';
+
+    // === 애니메이션 동시 시작 ===
+
+    // 1번 원: startRadius -> maxRadius 확장
+    radius1.value = withTiming(
+      maxRadius,
+      { duration: firstCircleDuration }
+    );
+
+    // 2번 원: startRadius -> maxRadius2 확장
+    radius2.value = withTiming(
+      maxRadius2,
+      { duration: secondCircleDuration }
+    );
+
+    // 2번 원: 0.8 -> 0 페이드 아웃
+    // 초기 opacity2 값은 0이므로, 먼저 0.8로 설정 필요
+    opacity2.value = 0.9; // 시작 시 투명도 0.8로 설정
+    opacity2.value = withTiming( // 바로 0으로 가는 애니메이션 시작
+      0,
+      { duration: secondCircleDuration },
+      (finishedOpacity2) => {
+        if (finishedOpacity2) {
+          // 이 애니메이션이 완료될 때 리셋 및 재시작
+          resetAndRestartAnimation();
+        }
+      }
+    );
+
+  }, [animationCounter]);
+
+  const animatedProps1 = useAnimatedProps(() => {
+    'worklet';
+    return {
+      r: radius1.value,
+      opacity: opacity1.value,
+    };
+  });
+
+  const animatedProps2 = useAnimatedProps(() => {
+    'worklet';
+    return {
+      r: radius2.value,
+      opacity: opacity2.value,
+    };
+  });
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title='Mode'>
-            API: {Config.API_URL + '\n'}
-            ENV: {Config.ENV + '\n'}
-            MODE: {(__DEV__ ? 'DEBUG' : 'RELEASE') + '\n'}
-            {JSON.stringify(Config, null, 2)}
-          </Section>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={styles.container}>
+      {/* 레이더 컨테이너 (화면 전체 크기) */}
+      <View style={styles.transformContainer}>
+        <Svg
+          height={screenHeight}
+          width={screenWidth}
+          // viewBox를 화면 좌표와 동일하게 설정
+          viewBox={`0 0 ${screenWidth} ${screenHeight}`}
+        >
+          {/* 레이더 원들 (화면 좌표 cx, cy 사용) */}
+          <AnimatedCircle
+            cx={centerX}
+            cy={centerY}
+            stroke="#c9c9c9"
+            strokeWidth="2"
+            fill="none"
+            animatedProps={animatedProps1}
+          />
+          <AnimatedCircle
+             cx={centerX}
+             cy={centerY}
+             stroke="#c9c9c9"
+             strokeWidth="2"
+             fill="none"
+             animatedProps={animatedProps2}
+          />
+        </Svg>
+      </View>
+
+      {/* 아이콘 컨테이너 (화면 하단 중앙) */}
+      <View style={[styles.iconContainer, { left: iconLeft, bottom: iconBottom }]}>
+        <UserIcon
+          width={iconSize}
+          height={iconSize}
+          fill="#white"
+        />
+      </View>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  iconContainer: {
+    position: 'absolute',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  transformContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: screenWidth,
+    height: screenHeight,
+    transform: [
+      { perspective: 800 },
+      { rotateX: '60deg' }, // 필요시 기울기 다시 설정
+    ],
   },
 });
 
-export default App;
+export default CirclePulse;
