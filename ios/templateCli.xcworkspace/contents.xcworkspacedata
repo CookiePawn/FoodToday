@@ -2,12 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:templateCli.xcodeproj">
+      location = "group:templatecli.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:templatecli.xcodeproj">
    </FileRef>
 </Workspace>
