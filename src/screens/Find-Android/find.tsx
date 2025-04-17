@@ -55,6 +55,7 @@ const CirclePulse = () => {
   const location = useAtomValue(locationAtom);
   const [markers, setMarkers] = useState<MarkerPosition[]>([]);
   const [platform, setPlatform] = useState<'ios' | 'android'>('ios');
+  const [showMarkers, setShowMarkers] = useState(false);
   
   // 기울기 애니메이션을 위한 shared value
   const rotateX = useSharedValue(0);
@@ -122,6 +123,7 @@ const CirclePulse = () => {
         duration: 500,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
+      setShowMarkers(true);
     }, 1500);
   }, []);
 
@@ -244,7 +246,7 @@ const CirclePulse = () => {
       </Animated.View>
 
       {/* 마커를 transformContainer 밖에 배치하고 Y 좌표 조정 */}
-      {markers.map((marker, index) => {
+      {showMarkers && markers.map((marker, index) => {
         // 3D 효과를 고려한 위치 계산
         const adjustedY = marker.y * Math.cos(60 * Math.PI / 180);
         return (
