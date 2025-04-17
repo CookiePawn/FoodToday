@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Linking, Platform, Dimensions } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import * as RNLocalize from "react-native-localize";
 import { useSetAtom } from 'jotai';
@@ -24,11 +24,22 @@ const iconSize = 80;
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-interface CurrentPosition {
+interface Position {
   coords: {
     latitude: number;
     longitude: number;
+    accuracy: number;
+    altitude: number | null;
+    altitudeAccuracy: number | null;
+    heading: number | null;
+    speed: number | null;
   };
+  timestamp: number;
+}
+
+interface PositionError {
+  code: number;
+  message: string;
 }
 
 interface GeocodingResponse {
@@ -128,33 +139,61 @@ const Load = () => {
 
   const getLocationInfo = (): Promise<GeocodingResponse> => {
     return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(
-        async ({ coords }: CurrentPosition) => {
-          const lat = coords.latitude;
-          const lon = coords.longitude;
-          const locale = RNLocalize.getLocales()[0].languageCode;
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 30000, // 30초로 증가
+        maximumAge: 0,
+      };
 
-          try {
-            const response = await fetch(
-              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=${locale}`,
-            );
-            const responseJson: GeocodingResponse = await response.json();
-            resolve(responseJson);
-          } catch (error) {
-            console.error("주소 변환 오류:", error);
-            reject(error);
+      const onSuccess = async (position: Position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const locale = RNLocalize.getLocales()[0].languageCode;
+
+        try {
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=${locale}`,
+          );
+          if (!response.ok) {
+            throw new Error('주소 변환 실패');
           }
-        },
-        (error: GeolocationError) => {
-          console.error("위치 정보 오류:", error);
-          reject(error);
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 2000,
-          maximumAge: 3600000,
-        },
-      );
+          const responseJson: GeocodingResponse = await response.json();
+          resolve(responseJson);
+        } catch (error) {
+          console.error("주소 변환 오류:", error);
+          // 주소 변환 실패 시 기본 위치(서울) 반환
+          resolve({
+            countryName: '대한민국',
+            principalSubdivision: '서울특별시',
+            city: '서울',
+            locality: '중구',
+            latitude: 37.5665,
+            longitude: 126.9780,
+          });
+        }
+      };
+
+      const onError = (error: PositionError) => {
+        console.error("위치 정보 오류:", error);
+        // 위치 정보 실패 시 기본 위치(서울) 반환
+        resolve({
+          countryName: '대한민국',
+          principalSubdivision: '서울특별시',
+          city: '서울',
+          locality: '중구',
+          latitude: 37.5665,
+          longitude: 126.9780,
+        });
+      };
+
+      // 위치 권한 확인
+      requestLocationPermission().then(hasPermission => {
+        if (hasPermission) {
+          Geolocation.getCurrentPosition(info => onSuccess(info));
+        } else {
+          onError({ code: 1, message: '위치 권한이 거부되었습니다' });
+        }
+      });
     });
   };
 
