@@ -3,8 +3,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types/navigation';
-import Load from '@/screens/Load';
-import Find from '@/screens/find';
+import { Load, FindAndroid, FindIOS } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -18,7 +17,8 @@ const App = () => {
         }}
       >
         <Stack.Screen name="Load" component={Load} />
-        <Stack.Screen name="Find" component={Find} />
+        <Stack.Screen name="FindAndroid" component={FindAndroid} />
+        <Stack.Screen name="FindIOS" component={FindIOS} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,7 +1,7 @@
 export type RootStackParamList = {
-  App: undefined;
   Load: undefined;
-  Find: undefined;
+  FindAndroid: undefined;
+  FindIOS: undefined;
 };
 
 declare global {

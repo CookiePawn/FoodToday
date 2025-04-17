@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     height: screenHeight,
     transform: [
       { perspective: 800 },
-      { rotateX: '60deg' },
+      { rotateX: '0deg' },
       { translateY: 100 },
     ],
   },
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   marker: {
-    position: 'absolute',
+    position: 'absolute',    
     width: 24,
     height: 24,
     justifyContent: 'center',

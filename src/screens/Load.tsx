@@ -274,7 +274,7 @@ const Load = () => {
 
         // 애니메이션 완료 후 Find 페이지로 이동
         setTimeout(() => {
-          navigation.navigate('Find');
+          Platform.OS === 'android' ? navigation.navigate('FindAndroid') : navigation.navigate('FindIOS');
         }, 2000);
       } catch (error: any) {
         setError(`위치 정보를 가져오는 데 실패했습니다: ${error.message}`);
