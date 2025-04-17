@@ -1,0 +1,1 @@
+export { default as mapBackground } from './map-background.jpeg';

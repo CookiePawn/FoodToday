@@ -56,7 +56,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "templateCli.app"
             BlueprintName = "templateCli"
-            ReferencedContainer = "container:templatecli.xcodeproj">
+            ReferencedContainer = "container:templateCli.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>

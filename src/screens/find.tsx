@@ -1,15 +1,14 @@
 // CirclePulse.tsx
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import Svg, { Circle, Path, G } from 'react-native-svg';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, Image } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
 import Animated, {
   useSharedValue,
   useAnimatedProps,
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
-import MapPinIcon from '@/assets/icons/map-pin.svg';
-import { UserIcon } from '@/assets';
+import { UserIcon, MapPinIcon, mapBackground } from '@/assets';
 import { useAtomValue } from 'jotai';
 import { locationAtom } from '@/atoms/location';
 import { Typography } from '@/components';
@@ -20,71 +19,84 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 // 애니메이션 값 정의
 const startRadius = 200;
 const startOpacity = 1;
-const maxRadius = screenWidth * 0.8; // 화면 너비 기준
+const maxRadius = screenWidth * 0.8;
 const maxRadius2 = maxRadius * 1.3;
 const firstCircleDuration = 1500;
 const secondCircleDuration = 2100;
 
 const iconSize = 40;
-// Icon 위치: 화면 하단 중앙 (하단에서 100 위)
 const iconBottom = 100;
 const iconLeft = screenWidth / 2 - iconSize / 2;
 
+// 마커 위치를 위한 타입 정의
+interface MarkerPosition {
+  x: number;
+  y: number;
+}
+
 const CirclePulse = () => {
   const location = useAtomValue(locationAtom);
+  const [markers, setMarkers] = useState<MarkerPosition[]>([]);
   const radius1 = useSharedValue(startRadius);
   const opacity1 = useSharedValue(startOpacity);
   const radius2 = useSharedValue(startRadius);
   const opacity2 = useSharedValue(0);
 
-  // 원의 중심 좌표 (화면 좌표 기준)
   const centerX = screenWidth / 2;
   const centerY = screenHeight - 100;
 
-  // 애니메이션 시퀀스를 반복하기 위한 상태 (예: 카운터 사용)
   const [animationCounter, setAnimationCounter] = React.useState(0);
 
   const resetAndRestartAnimation = () => {
     'worklet';
-    // 상태 리셋 (opacity1 포함)
     radius1.value = startRadius;
-    opacity1.value = startOpacity; // Reset opacity1
+    opacity1.value = startOpacity;
     radius2.value = startRadius;
     opacity2.value = 0;
     runOnJS(setAnimationCounter)(prev => prev + 1);
   };
 
+  // 랜덤 마커 위치 생성
+  useEffect(() => {
+    const generateRandomMarkers = () => {
+      const newMarkers: MarkerPosition[] = [];
+      // Y 좌표 생성 범위: 화면 높이의 60% ~ 90% 사이 (지도 이미지 영역)
+      const minY = screenHeight * 0.7;           
+      const maxY = screenHeight * 1.4;  
+      for (let i = 0; i < 3; i++) {
+        newMarkers.push({
+          x: Math.random() * (screenWidth - 80) + 40,           
+          y: Math.random() * (maxY - minY) + minY,
+        });               
+      }      
+      setMarkers(newMarkers);
+    };     
+
+    generateRandomMarkers();
+  }, []);
+
   React.useEffect(() => {
     'worklet';
-
-    // === 애니메이션 동시 시작 ===
-
-    // 1번 원: startRadius -> maxRadius 확장
     radius1.value = withTiming(
       maxRadius,
       { duration: firstCircleDuration }
     );
 
-    // 2번 원: startRadius -> maxRadius2 확장
     radius2.value = withTiming(
       maxRadius2,
       { duration: secondCircleDuration }
     );
 
-    // 2번 원: 0.8 -> 0 페이드 아웃
-    // 초기 opacity2 값은 0이므로, 먼저 0.8로 설정 필요
-    opacity2.value = 0.9; // 시작 시 투명도 0.8로 설정
-    opacity2.value = withTiming( // 바로 0으로 가는 애니메이션 시작
+    opacity2.value = 0.9;
+    opacity2.value = withTiming(
       0,
       { duration: secondCircleDuration },
       (finishedOpacity2) => {
         if (finishedOpacity2) {
-          // 이 애니메이션이 완료될 때 리셋 및 재시작
           resetAndRestartAnimation();
         }
       }
     );
-
   }, [animationCounter]);
 
   const animatedProps1 = useAnimatedProps(() => {
@@ -106,13 +118,18 @@ const CirclePulse = () => {
   return (
     <View style={styles.container}>
       <View style={styles.locationContainer}>
-        <Typography style={styles.locationText} >
+        <Typography style={styles.locationText}>
           {location ? `${location.city} ${location.district} 이시군요!` : '위치 정보 없음'}
         </Typography>
         <Typography style={styles.recommendText}>근처 음식점 중 랜덤으로 추천해드릴게요!</Typography>
       </View>
 
       <View style={styles.transformContainer}>
+        <Image
+          source={mapBackground}
+          style={styles.backgroundImage}
+          resizeMode="cover"
+        />
         <Svg
           height={screenHeight}
           width={screenWidth}
@@ -136,6 +153,26 @@ const CirclePulse = () => {
           />
         </Svg>
       </View>
+
+      {/* 마커를 transformContainer 밖에 배치하고 Y 좌표 조정 */}
+      {markers.map((marker, index) => {
+        // 3D 효과를 고려한 위치 계산
+        const adjustedY = marker.y * Math.cos(60 * Math.PI / 180);
+        return (
+          <View
+            key={`${index}-${marker.x}-${marker.y}`}
+            style={[
+              styles.marker,
+              {
+                left: marker.x,     
+                top: adjustedY,            
+              },
+            ]}
+          >
+            <MapPinIcon width={30} height={30} fill="white" stroke="#0064FF" />     
+          </View>
+        );
+      })}
 
       <View style={[styles.iconContainer, { left: iconLeft, bottom: iconBottom }]}>
         <UserIcon
@@ -173,17 +210,6 @@ const styles = StyleSheet.create({
     color: '#666666',
     marginTop: 8,
   },
-  map: {
-    flex: 1,
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-  },
-  iconContainer: {
-    position: 'absolute',
-  },
   transformContainer: {
     position: 'absolute',
     left: 0,
@@ -192,8 +218,25 @@ const styles = StyleSheet.create({
     height: screenHeight,
     transform: [
       { perspective: 800 },
-      { rotateX: '60deg' }, // 필요시 기울기 다시 설정
+      { rotateX: '60deg' },
+      { translateY: 100 },
     ],
+  },
+  backgroundImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+  },
+  iconContainer: {
+    position: 'absolute',
+  },
+  marker: {
+    position: 'absolute',
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
   },
 });
 
