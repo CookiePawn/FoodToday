@@ -20,7 +20,7 @@ const SCREEN_RATIO = {
   LOCATION_TOP: 0.1,
   FONT_SIZE: {
     LOCATION: 0.06,
-    RECOMMEND: 0.04,
+    RECOMMEND: 0.05,
   },
   MAP: {
     PERSPECTIVE: 800,
@@ -58,6 +58,8 @@ const CirclePulse = () => {
   
   // 기울기 애니메이션을 위한 shared value
   const rotateX = useSharedValue(0);
+  const locationOpacity = useSharedValue(1);
+  const recommendOpacity = useSharedValue(0.3);
   
   const radius1 = useSharedValue(startRadius);
   const opacity1 = useSharedValue(startOpacity);
@@ -88,6 +90,20 @@ const CirclePulse = () => {
     };
   });
 
+  const locationStyle = useAnimatedStyle(() => {
+    return {
+      opacity: locationOpacity.value,
+      color: locationOpacity.value === 1 ? '#0064FF' : '#666666',
+    };
+  });
+
+  const recommendStyle = useAnimatedStyle(() => {
+    return {
+      opacity: recommendOpacity.value,
+      color: recommendOpacity.value === 1 ? '#0064FF' : '#666666',
+    };
+  });
+
   useEffect(() => {
     setPlatform(Platform.OS as 'ios' | 'android');
     // 컴포넌트 마운트 시 기울기 애니메이션 시작
@@ -95,6 +111,18 @@ const CirclePulse = () => {
       duration: 1500,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     });
+
+    // 1.5초 후 텍스트 스타일 변경 애니메이션
+    setTimeout(() => {
+      locationOpacity.value = withTiming(0.3, {
+        duration: 500,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+      recommendOpacity.value = withTiming(1, {
+        duration: 500,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+    }, 1500);
   }, []);
 
   // 랜덤 마커 위치 생성
@@ -159,12 +187,12 @@ const CirclePulse = () => {
   return (
     <View style={styles.container}>
       <View style={[styles.locationContainer, { top: screenHeight * SCREEN_RATIO.LOCATION_TOP }]}>
-        <Typography style={[styles.locationText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.LOCATION }]}>
+        <Animated.Text style={[styles.locationText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.LOCATION }, locationStyle]}>
           {location ? `${location.city} ${location.district} 이시군요!` : '위치 정보 없음'}
-        </Typography>
-        <Typography style={[styles.recommendText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.RECOMMEND }]}>
+        </Animated.Text>
+        <Animated.Text style={[styles.recommendText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.RECOMMEND }, recommendStyle]}>
           근처 음식점 중 랜덤으로 추천해드릴게요!
-        </Typography>
+        </Animated.Text>
       </View>
 
       <Animated.View 
@@ -264,11 +292,8 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#0064FF',
   },
   recommendText: {
-    fontSize: 16,
-    color: '#666666',
     marginTop: 8,
   },
   transformContainer: {
