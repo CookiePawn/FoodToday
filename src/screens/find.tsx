@@ -12,6 +12,7 @@ import MapPinIcon from '@/assets/icons/map-pin.svg';
 import { UserIcon } from '@/assets';
 import { useAtomValue } from 'jotai';
 import { locationAtom } from '@/atoms/location';
+import { Typography } from '@/components';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -105,20 +106,18 @@ const CirclePulse = () => {
   return (
     <View style={styles.container}>
       <View style={styles.locationContainer}>
-        <Text style={styles.locationText}>
+        <Typography style={styles.locationText} >
           {location ? `${location.city} ${location.district} 이시군요!` : '위치 정보 없음'}
-        </Text>
-        <Text style={styles.recommendText}>근처 음식점 중 랜덤으로 추천해드릴게요!</Text>
+        </Typography>
+        <Typography style={styles.recommendText}>근처 음식점 중 랜덤으로 추천해드릴게요!</Typography>
       </View>
-      {/* 레이더 컨테이너 (화면 전체 크기) */}
+
       <View style={styles.transformContainer}>
         <Svg
           height={screenHeight}
           width={screenWidth}
-          // viewBox를 화면 좌표와 동일하게 설정
           viewBox={`0 0 ${screenWidth} ${screenHeight}`}
         >
-          {/* 레이더 원들 (화면 좌표 cx, cy 사용) */}
           <AnimatedCircle
             cx={centerX}
             cy={centerY}
@@ -128,22 +127,23 @@ const CirclePulse = () => {
             animatedProps={animatedProps1}
           />
           <AnimatedCircle
-             cx={centerX}
-             cy={centerY}
-             stroke="#c9c9c9"
-             strokeWidth="2"
-             fill="none"
-             animatedProps={animatedProps2}
+            cx={centerX}
+            cy={centerY}
+            stroke="#c9c9c9"
+            strokeWidth="2"
+            fill="none"
+            animatedProps={animatedProps2}
           />
         </Svg>
       </View>
 
-      {/* 아이콘 컨테이너 (화면 하단 중앙) */}
       <View style={[styles.iconContainer, { left: iconLeft, bottom: iconBottom }]}>
         <UserIcon
           width={iconSize}
           height={iconSize}
           fill="white"
+          stroke="#0064FF"
+          strokeWidth={2}
         />
       </View>
     </View>
@@ -153,6 +153,7 @@ const CirclePulse = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   locationContainer: {
     position: 'absolute',
@@ -171,6 +172,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666666',
     marginTop: 8,
+  },
+  map: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
   },
   iconContainer: {
     position: 'absolute',

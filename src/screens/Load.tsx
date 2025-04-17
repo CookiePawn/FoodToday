@@ -13,11 +13,11 @@ import Animated, {
   withTiming,
   withSequence,
   withDelay,
-  runOnJS,
   Easing,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { NavigationIcon } from '@/assets';
+import { Typography } from '@/components';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const iconSize = 80;
@@ -54,6 +54,8 @@ const Load = () => {
   // 애니메이션 값
   const iconPosition = useSharedValue({ x: 0, y: screenHeight - 150 });
   const iconOpacity = useSharedValue(1);
+  const textPosition = useSharedValue(screenHeight / 2 - 100);
+  const textOpacity = useSharedValue(0);
 
   const iconAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -62,6 +64,37 @@ const Load = () => {
       opacity: iconOpacity.value,
     };
   });
+
+  const textAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: textPosition.value }],
+      opacity: textOpacity.value,
+    };
+  });
+
+  const animateText = () => {
+    'worklet';
+    textPosition.value = withTiming(
+      screenHeight / 2 - 150,
+      { duration: 500, easing: Easing.out(Easing.cubic) }
+    );
+    textOpacity.value = withTiming(
+      1,
+      { duration: 500, easing: Easing.out(Easing.cubic) }
+    );
+  };
+
+  const animateTextOut = () => {
+    'worklet';
+    textPosition.value = withTiming(
+      screenHeight,
+      { duration: 500, easing: Easing.in(Easing.cubic) }
+    );
+    textOpacity.value = withTiming(
+      0,
+      { duration: 500, easing: Easing.in(Easing.cubic) }
+    );
+  };
 
   const animateIcon = (found: boolean) => {
     'worklet';
@@ -173,6 +206,10 @@ const Load = () => {
       try {
         // 초기 아이콘 애니메이션 시작
         animateIcon(false);
+        animateText();
+
+        // 초기 메시지 표시 후 1초 대기
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         const locationInfo = await getLocationInfo();
         setLocation({
@@ -185,13 +222,21 @@ const Load = () => {
         });
 
         // 위치 찾기 완료 애니메이션
+        textPosition.value = screenHeight / 2 - 100;
+        textOpacity.value = 0;
         setMessage('위치를 찾았습니다!');
+        animateText();
         animateIcon(true);
+
+        // 1초 후 텍스트가 아래로 사라지는 애니메이션
+        setTimeout(() => {
+          animateTextOut();
+        }, 1000);
 
         // 애니메이션 완료 후 Find 페이지로 이동
         setTimeout(() => {
           navigation.navigate('Find');
-        }, 2500);
+        }, 2000);
       } catch (error: any) {
         setError(`위치 정보를 가져오는 데 실패했습니다: ${error.message}`);
       }
@@ -206,8 +251,10 @@ const Load = () => {
         <NavigationIcon width={iconSize} height={iconSize} fill="white" stroke="#0064FF" strokeWidth={2} />
       </Animated.View>
 
-      <Text style={styles.message}>{message}</Text>
-      {error && <Text style={styles.errorText}>오류: {error}</Text>}
+      <Animated.View style={[styles.messageContainer, textAnimatedStyle]}>
+        <Typography style={styles.message}>{message}</Typography>
+        {error && <Text style={styles.errorText}>오류: {error}</Text>}
+      </Animated.View>
     </View>
   );
 };
@@ -222,11 +269,14 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
   },
+  messageContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+  },
   message: {
     color: '#0064FF',
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginTop: screenHeight / 2 - 150,
+    fontSize: 25,
+    fontWeight: '600',
   },
   errorText: {
     color: 'red',
