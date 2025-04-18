@@ -5,6 +5,7 @@ import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/models';
 import { GlobeIcon, MapPinIcon, PhoneIcon } from '@/assets';
+import AdBanner from '@/components/AdBanner';
 
 type ResultScreenRouteProp = RouteProp<RootStackParamList, 'Result'>;
 
@@ -98,6 +99,8 @@ const Result = () => {
         >
           <Text style={[styles.mapButtonText, { color: colors.gray500 }]}>다시하기</Text>
         </TouchableOpacity>
+
+        <AdBanner />
       </View>
     </ScrollView>
   );

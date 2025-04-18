@@ -3,4 +3,6 @@ declare module '@env' {
   export const ENV: string;
   export const NAVER_CLIENT_ID: string;
   export const NAVER_CLIENT_SECRET: string;
+  export const ANDROID_GOOGLE_AD_APP_ID: string;
+  export const IOS_GOOGLE_AD_APP_ID: string;
 } 

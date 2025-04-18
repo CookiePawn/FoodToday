@@ -19,38 +19,11 @@ import Animated, {
 import { NavigationIcon } from '@/assets';
 import { Typography } from '@/components';
 import { colors } from '@/constants';
-
+import { Position, PositionError, GeocodingResponse } from '@/models';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const iconSize = 80;
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-interface Position {
-  coords: {
-    latitude: number;
-    longitude: number;
-    accuracy: number;
-    altitude: number | null;
-    altitudeAccuracy: number | null;
-    heading: number | null;
-    speed: number | null;
-  };
-  timestamp: number;
-}
-
-interface PositionError {
-  code: number;
-  message: string;
-}
-
-interface GeocodingResponse {
-  countryName: string;
-  principalSubdivision: string;
-  city: string;
-  locality: string;
-  latitude: number;
-  longitude: number;
-}
 
 const Load = () => {
   const [error, setError] = useState<string | null>(null);

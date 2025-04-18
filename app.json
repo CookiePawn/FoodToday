@@ -1,4 +1,8 @@
 {
   "name": "templateCli",
-  "displayName": "templateCli"
+  "displayName": "templateCli",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-2191530294530492~4141620050",
+    "ios_app_id": "ca-app-pub-2191530294530492~8466038134"
+  }
 }
