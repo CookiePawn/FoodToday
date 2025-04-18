@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Linking, Platform, Dimensions } from 'react-native';
+import { Text, StyleSheet, Alert, Linking, Platform, Dimensions } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import * as RNLocalize from "react-native-localize";
@@ -63,6 +63,7 @@ const Load = () => {
   const iconOpacity = useSharedValue(1);
   const textPosition = useSharedValue(screenHeight / 2 - 100);
   const textOpacity = useSharedValue(0);
+  const backgroundColor = useSharedValue(colors.primary);
 
   const iconAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -134,13 +135,7 @@ const Load = () => {
   };
 
   const getLocationInfo = (): Promise<GeocodingResponse> => {
-    return new Promise((resolve, reject) => {
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 30000, // 30초로 증가
-        maximumAge: 0,
-      };
-
+    return new Promise((resolve) => {
       const onSuccess = async (position: Position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
@@ -280,8 +275,21 @@ const Load = () => {
     initializeLocation();
   }, []);
 
+  useEffect(() => {
+    backgroundColor.value = withTiming(
+      colors.white,
+      { duration: 500, easing: Easing.ease }
+    );
+  }, []);
+
+  const containerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: backgroundColor.value,
+    };
+  });
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, containerAnimatedStyle]}>
       <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
         <NavigationIcon width={iconSize} height={iconSize} fill={colors.white} stroke={colors.secondary} strokeWidth={2} />
       </Animated.View>
@@ -290,14 +298,13 @@ const Load = () => {
         <Typography style={styles.message}>{message}</Typography>
         {error && <Text style={styles.errorText}>오류: {error}</Text>}
       </Animated.View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
