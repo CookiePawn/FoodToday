@@ -65,7 +65,7 @@ const Result = () => {
           />
         )}
         <View style={styles.header}>
-          <Text style={styles.title}>{restaurant.title}</Text>
+          <Text style={styles.title}>{restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '')}</Text>
           <Text style={styles.category}>{restaurant.category}</Text>
         </View>
 
