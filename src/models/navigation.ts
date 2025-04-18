@@ -10,6 +10,8 @@ export type RootStackParamList = {
   };
   Permission: undefined;
   License: undefined;
+  Privacy: undefined;
+  Terms: undefined;
 };
 
 declare global {

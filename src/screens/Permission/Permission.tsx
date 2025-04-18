@@ -84,18 +84,38 @@ const Permission = () => {
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={[styles.button, styles.secondaryButton]} 
           onPress={() => RNExitApp.exitApp()}
+          style={[styles.button, styles.secondaryButton]} 
         >
           <Text style={[styles.buttonText, { color: colors.white }]}>나중에 하기</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('License')}
-          style={styles.licenseLink}
-        >
-          <Text style={styles.licenseText}>오픈소스 라이선스</Text>
-        </TouchableOpacity>
+        <View style={styles.linksContainer}>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('License')}
+            style={styles.link}
+          >
+            <Text style={styles.licenseText}>오픈소스 라이선스</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.separator}>|</Text>
+
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('Terms')}
+            style={styles.link}
+          >
+            <Text style={styles.licenseText}>서비스 이용약관</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.separator}>|</Text>
+
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('Privacy')}
+            style={styles.link}
+          >
+            <Text style={styles.licenseText}>개인정보 처리방침</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -148,9 +168,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  licenseLink: {
-    marginTop: 20,
+  linksContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20,
+  },
+  link: {
+    paddingHorizontal: 8,
+  },
+  separator: {
+    color: colors.white,
+    opacity: 0.7,
+    fontSize: 14,
   },
   licenseText: {
     color: colors.white,
