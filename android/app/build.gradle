@@ -110,10 +110,10 @@ android {
     productFlavors {
         development {
             applicationIdSuffix ".dev"
-            resValue "string", "app_name", "FoodToday DEV"
+            resValue "string", "app_name", "오늘 뭐 먹지? DEV"
         }
         production {
-            resValue "string", "app_name", "FoodToday"
+            resValue "string", "app_name", "오늘 뭐 먹지?"
         }
     }
     buildTypes {
@@ -141,4 +141,8 @@ dependencies {
     }
 
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.activity:activity:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
