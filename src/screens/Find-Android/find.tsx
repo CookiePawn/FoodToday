@@ -15,6 +15,7 @@ import { UserIcon, MapPinIcon, mapBackground } from '@/assets';
 import { useAtomValue } from 'jotai';
 import { locationAtom } from '@/atoms/location';
 import { Typography } from '@/components';
+import { colors } from '@/constants';
 
 const SCREEN_RATIO = {
   LOCATION_TOP: 0.1,
@@ -56,12 +57,12 @@ const CirclePulse = () => {
   const [markers, setMarkers] = useState<MarkerPosition[]>([]);
   const [platform, setPlatform] = useState<'ios' | 'android'>('ios');
   const [showMarkers, setShowMarkers] = useState(false);
-  
+
   // 기울기 애니메이션을 위한 shared value
   const rotateX = useSharedValue(0);
   const locationOpacity = useSharedValue(1);
   const recommendOpacity = useSharedValue(0.3);
-  
+
   const radius1 = useSharedValue(startRadius);
   const opacity1 = useSharedValue(startOpacity);
   const radius2 = useSharedValue(startRadius);
@@ -94,14 +95,14 @@ const CirclePulse = () => {
   const locationStyle = useAnimatedStyle(() => {
     return {
       opacity: locationOpacity.value,
-      color: locationOpacity.value === 1 ? '#0064FF' : '#666666',
+      color: locationOpacity.value === 1 ? colors.secondary : colors.gray600,
     };
   });
 
   const recommendStyle = useAnimatedStyle(() => {
     return {
       opacity: recommendOpacity.value,
-      color: recommendOpacity.value === 1 ? '#0064FF' : '#666666',
+      color: recommendOpacity.value === 1 ? colors.secondary : colors.gray600,
     };
   });
 
@@ -132,16 +133,16 @@ const CirclePulse = () => {
     const generateRandomMarkers = () => {
       const newMarkers: MarkerPosition[] = [];
       // Y 좌표 생성 범위: 화면 높이의 60% ~ 90% 사이 (지도 이미지 영역)
-      const minY = screenHeight * 0.7;           
-      const maxY = screenHeight * 1.4;  
+      const minY = screenHeight * 0.7;
+      const maxY = screenHeight * 1.4;
       for (let i = 0; i < 3; i++) {
         newMarkers.push({
-          x: Math.random() * (screenWidth - 80) + 40,           
+          x: Math.random() * (screenWidth - 80) + 40,
           y: Math.random() * (maxY - minY) + minY,
-        });               
-      }      
+        });
+      }
       setMarkers(newMarkers);
-    };     
+    };
 
     generateRandomMarkers();
   }, []);
@@ -197,11 +198,11 @@ const CirclePulse = () => {
         </Animated.Text>
       </View>
 
-      <Animated.View 
+      <Animated.View
         style={[
-          styles.transformContainer, 
-          { 
-            width: screenWidth, 
+          styles.transformContainer,
+          {
+            width: screenWidth,
             height: screenHeight,
           },
           animatedStyle
@@ -255,12 +256,12 @@ const CirclePulse = () => {
             style={[
               styles.marker,
               {
-                left: marker.x,     
-                top: adjustedY,            
+                left: marker.x,
+                top: adjustedY,
               },
             ]}
           >
-            <MapPinIcon width={30} height={30} fill="white" stroke="#0064FF" />     
+            <MapPinIcon width={30} height={30} fill={colors.white} stroke={colors.secondary} />
           </View>
         );
       })}
@@ -269,8 +270,8 @@ const CirclePulse = () => {
         <UserIcon
           width={iconSize}
           height={iconSize}
-          fill="white"
-          stroke="#0064FF"
+          fill={colors.white}
+          stroke={colors.secondary}
           strokeWidth={2}
         />
       </View>
@@ -281,7 +282,7 @@ const CirclePulse = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
   },
   locationContainer: {
     position: 'absolute',
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   marker: {
-    position: 'absolute',    
+    position: 'absolute',
     width: 24,
     height: 24,
     justifyContent: 'center',

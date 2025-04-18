@@ -18,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { NavigationIcon } from '@/assets';
 import { Typography } from '@/components';
+import { colors } from '@/constants';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const iconSize = 80;
@@ -287,7 +288,7 @@ const Load = () => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
-        <NavigationIcon width={iconSize} height={iconSize} fill="white" stroke="#0064FF" strokeWidth={2} />
+        <NavigationIcon width={iconSize} height={iconSize} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
       </Animated.View>
 
       <Animated.View style={[styles.messageContainer, textAnimatedStyle]}>
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   message: {
-    color: '#0064FF',
+    color: colors.primary,
     fontSize: 25,
     fontWeight: '600',
   },
