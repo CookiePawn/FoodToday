@@ -47,6 +47,7 @@ PODS:
     - React-RCTText (= 0.77.0)
     - React-RCTVibration (= 0.77.0)
   - React-callinvoker (0.77.0)
+  - React-Codegen (0.1.0)
   - React-Core (0.77.0):
     - glog
     - hermes-engine
@@ -1592,6 +1593,14 @@ PODS:
     - React-logger (= 0.77.0)
     - React-perflogger (= 0.77.0)
     - React-utils (= 0.77.0)
+  - RNExitApp (2.0.0):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
   - RNLocalize (3.4.1):
     - DoubleConversion
     - glog
@@ -1916,6 +1925,7 @@ DEPENDENCIES:
   - ReactAppDependencyProvider (from `build/generated/ios`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNExitApp (from `../node_modules/react-native-exit-app`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -1925,6 +1935,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - React-Codegen
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -2067,6 +2078,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNExitApp:
+    :path: "../node_modules/react-native-exit-app"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
   RNPermissions:
@@ -2094,6 +2107,7 @@ SPEC CHECKSUMS:
   RCTTypeSafety: 50d6ec72a3d13cf77e041ff43a0617050fb98e3f
   React: e46fdbd82d2de942970c106677056f3bdd438d82
   React-callinvoker: b027ad895934b5f27ce166d095ed0d272d7df619
+  React-Codegen: 4b8b4817cea7a54b83851d4c1f91f79aa73de30a
   React-Core: 92733c8280b1642afed7ebfb3c523feaec946ece
   React-CoreModules: e2dfd87b6fdb9d969b16871655885a4d89a2a9f4
   React-cxxreact: d1a70e78543bb5b159fdaf6c52cadd33c1ae3244
@@ -2150,6 +2164,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 6e8d68583f39dc31ee65235110287277eb8556ef
   ReactCodegen: c08a5113d9c9c895fe10f3c296f74c6b705a60a9
   ReactCommon: 1bd2dc684d7992acbf0dfee887b89a57a1ead86d
+  RNExitApp: 2f85821d19ae680d29aa2aa27aaba6a2fee5f0e1
   RNLocalize: 7ed277415799ab5a8931b77fd2124c4749822e8a
   RNPermissions: 7ba5642b84424df723961fa6291fc9eaf467e687
   RNReanimated: ff2d357b213ca4a2adc48c1548686da18cd32da8

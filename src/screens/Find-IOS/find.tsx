@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { UserIcon, MapPinIcon, mapBackground } from '@/assets';
 import { useAtomValue } from 'jotai';
-import { locationAtom } from '@/atoms/location';
+import { locationAtom } from '@/atoms';
 import { Typography } from '@/components';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

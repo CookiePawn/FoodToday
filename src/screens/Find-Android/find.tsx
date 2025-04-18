@@ -1,21 +1,23 @@
 // CirclePulse.tsx
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Image, useWindowDimensions, Platform } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, useWindowDimensions, Text, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import Animated, {
   useSharedValue,
   useAnimatedProps,
   withTiming,
   runOnJS,
-  withSpring,
   Easing,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { UserIcon, MapPinIcon, mapBackground } from '@/assets';
 import { useAtomValue } from 'jotai';
-import { locationAtom } from '@/atoms/location';
-import { Typography } from '@/components';
+import { locationAtom } from '@/atoms';
 import { colors } from '@/constants';
+import { searchNearbyRestaurants } from '@/services';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, NaverSearchResult } from '@/models';
 
 const SCREEN_RATIO = {
   LOCATION_TOP: 0.1,
@@ -51,12 +53,23 @@ interface MarkerPosition {
   y: number;
 }
 
+// 랜덤한 음식 카테고리 배열
+const foodCategories = [
+  '한식', '중식', '일식', '양식', '분식', '치킨', '피자', '햄버거',
+  '돈까스', '회', '초밥', '라면', '국밥', '찌개', '찜', '탕',
+  '샐러드', '샌드위치', '카페', '디저트', '베이커리'
+];
+
 const CirclePulse = () => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const location = useAtomValue(locationAtom);
   const [markers, setMarkers] = useState<MarkerPosition[]>([]);
-  const [platform, setPlatform] = useState<'ios' | 'android'>('ios');
   const [showMarkers, setShowMarkers] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [restaurants, setRestaurants] = useState<NaverSearchResult[]>([]);
+  const [showButton, setShowButton] = useState(false);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [refreshing, setRefreshing] = useState(false);
 
   // 기울기 애니메이션을 위한 shared value
   const rotateX = useSharedValue(0);
@@ -107,7 +120,6 @@ const CirclePulse = () => {
   });
 
   useEffect(() => {
-    setPlatform(Platform.OS as 'ios' | 'android');
     // 컴포넌트 마운트 시 기울기 애니메이션 시작
     rotateX.value = withTiming(60, {
       duration: 1500,
@@ -125,23 +137,28 @@ const CirclePulse = () => {
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
       setShowMarkers(true);
-    }, 1500);
+    }, 2000);
+  }, []);
+
+  // 화면 처음 진입 시 랜덤 카테고리 선택
+  useEffect(() => {
+    const randomCategory = foodCategories[Math.floor(Math.random() * foodCategories.length)];
+    setSelectedCategory(randomCategory);
   }, []);
 
   // 랜덤 마커 위치 생성
   useEffect(() => {
     const generateRandomMarkers = () => {
-      const newMarkers: MarkerPosition[] = [];
-      // Y 좌표 생성 범위: 화면 높이의 60% ~ 90% 사이 (지도 이미지 영역)
-      const minY = screenHeight * 0.7;
-      const maxY = screenHeight * 1.4;
-      for (let i = 0; i < 3; i++) {
-        newMarkers.push({
-          x: Math.random() * (screenWidth - 80) + 40,
-          y: Math.random() * (maxY - minY) + minY,
-        });
-      }
+      const newMarkers: MarkerPosition[] = Array.from({ length: 5 }, () => ({
+        x: Math.random() * (screenWidth - 80) + 40,
+        y: Math.random() * (screenHeight * 0.3) + screenHeight * 0.7,
+      }));
       setMarkers(newMarkers);
+
+      // 5초 후 버튼 표시
+      setTimeout(() => {
+        setShowButton(true);
+      }, 3500);
     };
 
     generateRandomMarkers();
@@ -187,95 +204,159 @@ const CirclePulse = () => {
     };
   });
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    try {
+      // 랜덤 카테고리 선택
+      const randomCategory = foodCategories[Math.floor(Math.random() * foodCategories.length)];
+      setSelectedCategory(randomCategory);
+      
+      // 랜덤 마커 위치 새로 생성
+      const newMarkers: MarkerPosition[] = Array.from({ length: 5 }, () => ({
+        x: Math.random() * (screenWidth - 80) + 40,
+        y: Math.random() * (screenHeight * 0.3) + screenHeight * 0.7,
+      }));
+      setMarkers(newMarkers);
+    } catch (error) {
+      console.error('카테고리 변경 중 오류:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
+  const handleButtonPress = async () => {
+    if (!location) return;
+    
+    try {
+      // 선택된 카테고리로 검색
+      const { items: restaurants } = await searchNearbyRestaurants(location, selectedCategory);
+      console.log('검색된 음식점:', restaurants);
+      
+      if (restaurants.length > 0) {
+        const randomIndex = Math.floor(Math.random() * restaurants.length);
+        const selectedRestaurant = restaurants[randomIndex];
+        navigation.navigate('Result', { restaurant: selectedRestaurant });
+      }
+    } catch (error) {
+      console.error('음식점 검색 중 오류:', error);
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={[styles.locationContainer, { top: screenHeight * SCREEN_RATIO.LOCATION_TOP }]}>
-        <Animated.Text style={[styles.locationText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.LOCATION }, locationStyle]}>
-          {location ? `${location.city} ${location.district} 이시군요!` : '위치 정보 없음'}
-        </Animated.Text>
-        <Animated.Text style={[styles.recommendText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.RECOMMEND }, recommendStyle]}>
-          근처 음식점 중 랜덤으로 추천해드릴게요!
-        </Animated.Text>
-      </View>
+    <ScrollView 
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          progressViewOffset={0}
+        />
+      }
+    >
+      <View style={styles.content}>
+        <View style={[styles.locationContainer, { top: screenHeight * SCREEN_RATIO.LOCATION_TOP }]}>
+          <Animated.Text style={[styles.locationText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.LOCATION }, locationStyle]}>
+            {location ? `${location.city} ${location.district} 이시군요!` : '위치 정보 없음'}
+          </Animated.Text>
+          <Animated.Text style={[styles.recommendText, { fontSize: screenWidth * SCREEN_RATIO.FONT_SIZE.RECOMMEND }, recommendStyle]}>
+            {selectedCategory ? (
+              <>
+                <Text style={{ color: colors.gray500 }}>오늘은 </Text>
+                <Text style={{ color: colors.secondary }}>{selectedCategory}</Text>
+                <Text style={{ color: colors.gray500 }}>중에서 찾아드릴게요!</Text>
+              </>
+            ) : (
+              '근처 음식점 중 랜덤으로 추천해드릴게요!'
+            )}
+          </Animated.Text>
+        </View>
 
-      <Animated.View
-        style={[
-          styles.transformContainer,
-          {
-            width: screenWidth,
-            height: screenHeight,
-          },
-          animatedStyle
-        ]}
-      >
-        <Image
-          source={mapBackground}
+        <Animated.View
           style={[
-            styles.backgroundImage,
+            styles.transformContainer,
             {
-              width: screenWidth * SCREEN_RATIO.MAP.SCALE,
-              height: screenHeight * SCREEN_RATIO.MAP.SCALE,
-              top: -screenHeight * SCREEN_RATIO.MAP.TOP_OFFSET,
-              left: -screenWidth * (SCREEN_RATIO.MAP.SCALE - 1) / 2,
-            }
+              width: screenWidth,
+              height: screenHeight,
+            },
+            animatedStyle
           ]}
-          resizeMode="cover"
-        />
-        <Svg
-          height={screenHeight}
-          width={screenWidth}
-          viewBox={`0 0 ${screenWidth} ${screenHeight}`}
-          style={{ zIndex: 1 }}
         >
-          <AnimatedCircle
-            cx={centerX}
-            cy={centerY}
-            stroke="#c9c9c9"
-            strokeWidth="2"
-            fill="none"
-            animatedProps={animatedProps1}
-          />
-          <AnimatedCircle
-            cx={centerX}
-            cy={centerY}
-            stroke="#c9c9c9"
-            strokeWidth="2"
-            fill="none"
-            animatedProps={animatedProps2}
-          />
-        </Svg>
-      </Animated.View>
-
-      {/* 마커를 transformContainer 밖에 배치하고 Y 좌표 조정 */}
-      {showMarkers && markers.map((marker, index) => {
-        // 3D 효과를 고려한 위치 계산
-        const adjustedY = marker.y * Math.cos(60 * Math.PI / 180);
-        return (
-          <View
-            key={`${index}-${marker.x}-${marker.y}`}
+          <Image
+            source={mapBackground}
             style={[
-              styles.marker,
+              styles.backgroundImage,
               {
-                left: marker.x,
-                top: adjustedY,
-              },
+                width: screenWidth * SCREEN_RATIO.MAP.SCALE,
+                height: screenHeight * SCREEN_RATIO.MAP.SCALE,
+                top: -screenHeight * SCREEN_RATIO.MAP.TOP_OFFSET,
+                left: -screenWidth * (SCREEN_RATIO.MAP.SCALE - 1) / 2,
+              }
             ]}
+            resizeMode="cover"
+          />
+          <Svg
+            height={screenHeight}
+            width={screenWidth}
+            viewBox={`0 0 ${screenWidth} ${screenHeight}`}
+            style={{ zIndex: 1 }}
           >
-            <MapPinIcon width={30} height={30} fill={colors.white} stroke={colors.secondary} />
-          </View>
-        );
-      })}
+            <AnimatedCircle
+              cx={centerX}
+              cy={centerY}
+              stroke="#c9c9c9"
+              strokeWidth="2"
+              fill="none"
+              animatedProps={animatedProps1}
+            />
+            <AnimatedCircle
+              cx={centerX}
+              cy={centerY}
+              stroke="#c9c9c9"
+              strokeWidth="2"
+              fill="none"
+              animatedProps={animatedProps2}
+            />
+          </Svg>
+        </Animated.View>
 
-      <View style={[styles.iconContainer, { left: iconLeft, bottom: iconBottom }]}>
-        <UserIcon
-          width={iconSize}
-          height={iconSize}
-          fill={colors.white}
-          stroke={colors.secondary}
-          strokeWidth={2}
-        />
+        {showMarkers && markers.map((marker, index) => {
+          const adjustedY = marker.y * Math.cos(60 * Math.PI / 180);
+          return (
+            <View
+              key={`${index}-${marker.x}-${marker.y}`}
+              style={[
+                styles.marker,
+                {
+                  left: marker.x,
+                  top: adjustedY,
+                },
+              ]}
+            >
+              <MapPinIcon width={30} height={30} fill={colors.white} stroke={colors.secondary} />
+            </View>
+          );
+        })}
+
+        <View style={[styles.iconContainer, { left: iconLeft, bottom: iconBottom }]}>
+          <UserIcon
+            width={iconSize}
+            height={iconSize}
+            fill={colors.white}
+            stroke={colors.secondary}
+            strokeWidth={2}
+          />
+        </View>
+
+        {showButton && (
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={handleButtonPress}
+          >
+            <Text style={styles.buttonText}>결과 보러가기</Text>
+          </TouchableOpacity>
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -283,6 +364,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  content: {
+    flex: 1,
+    height: screenHeight,
   },
   locationContainer: {
     position: 'absolute',
@@ -295,9 +380,11 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 24,
     fontWeight: 'bold',
+    fontFamily: 'Pretendard-Bold',
   },
   recommendText: {
     marginTop: 8,
+    fontFamily: 'Pretendard-Regular',
   },
   transformContainer: {
     position: 'absolute',
@@ -320,6 +407,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2,
+  },
+  button: {
+    position: 'absolute',
+    bottom: 20,
+    left: 16,
+    right: 16,
+    backgroundColor: colors.secondary,
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

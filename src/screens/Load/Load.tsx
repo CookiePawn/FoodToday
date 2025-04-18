@@ -4,10 +4,10 @@ import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import * as RNLocalize from "react-native-localize";
 import { useSetAtom } from 'jotai';
-import { locationAtom } from '@/atoms/location';
+import { locationAtom } from '@/atoms';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@/types/navigation';
+import { RootStackParamList } from '@/models';
 import Animated, {
   useSharedValue,
   withTiming,
@@ -50,11 +50,6 @@ interface GeocodingResponse {
   locality: string;
   latitude: number;
   longitude: number;
-}
-
-interface GeolocationError {
-  code: number;
-  message: string;
 }
 
 const Load = () => {
@@ -288,7 +283,7 @@ const Load = () => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
-        <NavigationIcon width={iconSize} height={iconSize} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
+        <NavigationIcon width={iconSize} height={iconSize} fill={colors.white} stroke={colors.secondary} strokeWidth={2} />
       </Animated.View>
 
       <Animated.View style={[styles.messageContainer, textAnimatedStyle]}>
