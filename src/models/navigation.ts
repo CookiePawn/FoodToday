@@ -9,6 +9,7 @@ export type RootStackParamList = {
     restaurant: NaverSearchResult;
   };
   Permission: undefined;
+  License: undefined;
 };
 
 declare global {

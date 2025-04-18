@@ -55,6 +55,7 @@ const Result = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <AdBanner />
       <View style={styles.card}>
         {imageUrl && (
           <Image 
@@ -99,9 +100,8 @@ const Result = () => {
         >
           <Text style={[styles.mapButtonText, { color: colors.gray500 }]}>다시하기</Text>
         </TouchableOpacity>
-
-        <AdBanner />
       </View>
+      <AdBanner />
     </ScrollView>
   );
 };

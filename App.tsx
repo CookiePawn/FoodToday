@@ -2,14 +2,14 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/models';
-import { Load, FindAndroid, FindIOS, Result, Permission } from '@/screens';
-import useExitApp from '@/hooks/useExitApp';
+import { Load, FindAndroid, FindIOS, Result, Permission, License } from '@/screens';
+import { useExitApp } from '@/hooks';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App = () => {
   useExitApp();
-  
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -24,6 +24,7 @@ const App = () => {
         <Stack.Screen name="FindAndroid" component={FindAndroid} />
         <Stack.Screen name="FindIOS" component={FindIOS} />
         <Stack.Screen name="Result" component={Result} />
+        <Stack.Screen name="License" component={License} />
       </Stack.Navigator>
     </NavigationContainer>
   );

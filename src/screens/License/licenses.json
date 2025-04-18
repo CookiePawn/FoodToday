@@ -1,0 +1,275 @@
+[
+  {
+    "name": "@react-native-community/geolocation",
+    "version": "3.4.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-navigation/native",
+    "version": "7.1.6",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-navigation/native-stack",
+    "version": "7.3.10",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "axios",
+    "version": "1.8.4",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "jotai",
+    "version": "2.12.3",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react",
+    "version": "18.3.1",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native",
+    "version": "0.77.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-config",
+    "version": "1.5.5",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-dotenv",
+    "version": "3.4.11",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-exit-app",
+    "version": "2.0.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-geolocation-service",
+    "version": "5.3.1",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-google-mobile-ads",
+    "version": "15.1.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-html-parser",
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-localize",
+    "version": "3.4.1",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-permissions",
+    "version": "5.3.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-reanimated",
+    "version": "3.17.4",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-safe-area-context",
+    "version": "5.4.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-screens",
+    "version": "4.10.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-svg",
+    "version": "15.11.2",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@babel/core",
+    "version": "7.25.2",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@babel/preset-env",
+    "version": "7.25.3",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@babel/runtime",
+    "version": "7.25.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-native-community/cli",
+    "version": "15.0.1",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-native-community/cli-platform-android",
+    "version": "15.0.1",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-native-community/cli-platform-ios",
+    "version": "15.0.1",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-native/babel-preset",
+    "version": "0.77.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-native/eslint-config",
+    "version": "0.77.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-native/metro-config",
+    "version": "0.77.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@react-native/typescript-config",
+    "version": "0.77.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@types/jest",
+    "version": "29.5.13",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@types/react",
+    "version": "18.2.6",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "@types/react-test-renderer",
+    "version": "18.0.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "babel-plugin-module-resolver",
+    "version": "5.0.2",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "eslint",
+    "version": "8.19.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "jest",
+    "version": "29.6.3",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "prettier",
+    "version": "2.8.8",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-svg-transformer",
+    "version": "1.5.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-test-renderer",
+    "version": "18.3.1",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "typescript",
+    "version": "5.0.4",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  }
+]

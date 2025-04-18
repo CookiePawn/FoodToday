@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/models';
 import { MapPinIcon } from '@/assets';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import RNExitApp from 'react-native-exit-app';
 
 const Permission = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -84,9 +85,16 @@ const Permission = () => {
 
         <TouchableOpacity 
           style={[styles.button, styles.secondaryButton]} 
-          onPress={() => navigation.goBack()}
+          onPress={() => RNExitApp.exitApp()}
         >
           <Text style={[styles.buttonText, { color: colors.white }]}>나중에 하기</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('License')}
+          style={styles.licenseLink}
+        >
+          <Text style={styles.licenseText}>오픈소스 라이선스</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -139,6 +147,16 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  licenseLink: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  licenseText: {
+    color: colors.white,
+    fontSize: 14,
+    opacity: 0.7,
+    textDecorationLine: 'underline',
   },
 });
 
