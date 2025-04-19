@@ -1,1 +1,1 @@
-export { default as FindAndroid } from './Find';
+export { default as FindAndroid } from './find';
