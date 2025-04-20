@@ -7,15 +7,45 @@ import { RootStackParamList } from '@/models';
 import { MapPinIcon } from '@/assets';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import RNExitApp from 'react-native-exit-app';
+import Animated, { 
+  useAnimatedStyle, 
+  useSharedValue, 
+  withTiming, 
+  withDelay,
+  Easing 
+} from 'react-native-reanimated';
 
 const Permission = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const [isLoading, setIsLoading] = useState(true);
+
+  // 애니메이션 값
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(20);
+
+  const containerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+      transform: [{ translateY: translateY.value }],
+    };
+  });
 
   useEffect(() => {
     checkPermission();
   }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      opacity.value = withTiming(1, {
+        duration: 500,
+        easing: Easing.out(Easing.cubic),
+      });
+      translateY.value = withTiming(0, {
+        duration: 500,
+        easing: Easing.out(Easing.cubic),
+      });
+    }
+  }, [isLoading]);
 
   const checkPermission = async () => {
     const locationPermission = Platform.select({
@@ -64,7 +94,7 @@ const Permission = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, containerStyle]}>
       <View style={styles.content}>
         <MapPinIcon width={80} height={80} fill={colors.primary} stroke={colors.white} strokeWidth={2} />
         <Text style={styles.title}>위치 권한이 필요합니다</Text>
@@ -80,14 +110,14 @@ const Permission = () => {
           style={[styles.button, styles.primaryButton]} 
           onPress={handleRequestPermission}
         >
-          <Text style={[styles.buttonText, { color: colors.primary }]}>권한 허용하기</Text>
+          <Text style={[styles.buttonText, { color: colors.white }]}>권한 허용하기</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           onPress={() => RNExitApp.exitApp()}
           style={[styles.button, styles.secondaryButton]} 
         >
-          <Text style={[styles.buttonText, { color: colors.white }]}>나중에 하기</Text>
+          <Text style={[styles.buttonText, { color: colors.primary }]}>나중에 하기</Text>
         </TouchableOpacity>
 
         <View style={styles.linksContainer}>
@@ -117,14 +147,14 @@ const Permission = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.white,
     padding: 24,
   },
   content: {
@@ -135,14 +165,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.white,
+    color: colors.gray600,
     marginTop: 24,
     marginBottom: 16,
     textAlign: 'center',
   },
   description: {
     fontSize: 16,
-    color: colors.white,
+    color: colors.gray500,
     textAlign: 'center',
     lineHeight: 24,
     opacity: 0.9,
@@ -157,12 +187,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButton: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.primary,
   },
   secondaryButton: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: colors.white,
+    borderColor: colors.primary,
   },
   buttonText: {
     fontSize: 16,
@@ -178,12 +208,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   separator: {
-    color: colors.white,
+    color: colors.gray400,
     opacity: 0.7,
     fontSize: 14,
   },
   licenseText: {
-    color: colors.white,
+    color: colors.gray400,
     fontSize: 14,
     opacity: 0.7,
     textDecorationLine: 'underline',

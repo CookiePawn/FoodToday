@@ -33,10 +33,9 @@ const Load = () => {
 
   // 애니메이션 값
   const iconPosition = useSharedValue({ x: 0, y: screenHeight - 150 });
-  const iconOpacity = useSharedValue(1);
-  const textPosition = useSharedValue(screenHeight / 2 - 100);
+  const iconOpacity = useSharedValue(0);
+  const textPosition = useSharedValue(20);
   const textOpacity = useSharedValue(0);
-  const backgroundColor = useSharedValue(colors.primary);
 
   const iconAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -56,7 +55,7 @@ const Load = () => {
   const animateText = () => {
     'worklet';
     textPosition.value = withTiming(
-      screenHeight / 2 - 150,
+      0,
       { duration: 500, easing: Easing.out(Easing.cubic) }
     );
     textOpacity.value = withTiming(
@@ -68,7 +67,7 @@ const Load = () => {
   const animateTextOut = () => {
     'worklet';
     textPosition.value = withTiming(
-      screenHeight,
+      -20,
       { duration: 500, easing: Easing.in(Easing.cubic) }
     );
     textOpacity.value = withTiming(
@@ -103,6 +102,11 @@ const Load = () => {
       iconPosition.value = withTiming(
         { x: screenWidth / 2 - iconSize / 2, y: screenHeight / 2 - iconSize / 2 },
         { duration: 1000, easing: Easing.out(Easing.cubic) }
+      );
+      // 아이콘 페이드인 추가
+      iconOpacity.value = withTiming(
+        1,
+        { duration: 500, easing: Easing.out(Easing.cubic) }
       );
     }
   };
@@ -207,6 +211,9 @@ const Load = () => {
       }
 
       try {
+        // 0.5초 대기 후 애니메이션 시작
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
         // 초기 아이콘 애니메이션 시작
         animateIcon(false);
         animateText();
@@ -225,13 +232,13 @@ const Load = () => {
         });
 
         // 위치 찾기 완료 애니메이션
-        textPosition.value = screenHeight / 2 - 100;
+        textPosition.value = 20;
         textOpacity.value = 0;
         setMessage('위치를 찾았습니다!');
         animateText();
         animateIcon(true);
 
-        // 1초 후 텍스트가 아래로 사라지는 애니메이션
+        // 1초 후 텍스트가 위로 사라지는 애니메이션
         setTimeout(() => {
           animateTextOut();
         }, 1000);
@@ -248,21 +255,8 @@ const Load = () => {
     initializeLocation();
   }, []);
 
-  useEffect(() => {
-    backgroundColor.value = withTiming(
-      colors.white,
-      { duration: 500, easing: Easing.ease }
-    );
-  }, []);
-
-  const containerAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor: backgroundColor.value,
-    };
-  });
-
   return (
-    <Animated.View style={[styles.container, containerAnimatedStyle]}>
+    <Animated.View style={[styles.container]}>
       <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
         <NavigationIcon width={iconSize} height={iconSize} fill={colors.white} stroke={colors.secondary} strokeWidth={2} />
       </Animated.View>
@@ -280,6 +274,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.white,
   },
   iconContainer: {
     position: 'absolute',
@@ -287,9 +282,10 @@ const styles = StyleSheet.create({
   messageContainer: {
     position: 'absolute',
     alignItems: 'center',
+    top: 100,
   },
   message: {
-    color: colors.primary,
+    color: colors.secondary,
     fontSize: 25,
     fontWeight: '600',
   },
