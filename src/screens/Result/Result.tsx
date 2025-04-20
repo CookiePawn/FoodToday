@@ -6,6 +6,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/models';
 import { GlobeIcon, MapPinIcon, PhoneIcon } from '@/assets';
 import AdBanner from '@/components/AdBanner';
+import Animated, { 
+  useAnimatedStyle, 
+  useSharedValue, 
+  withRepeat, 
+  withTiming,
+  withSequence,
+  Easing
+} from 'react-native-reanimated';
 
 type ResultScreenRouteProp = RouteProp<RootStackParamList, 'Result'>;
 
@@ -14,6 +22,23 @@ const Result = () => {
   const { restaurant } = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const translateX = useSharedValue(-200);
+
+  useEffect(() => {
+    translateX.value = withRepeat(
+      withSequence(
+        withTiming(400, { duration: 1500, easing: Easing.linear }),
+        withTiming(-200, { duration: 0 })
+      ),
+      -1
+    );
+  }, []);
+
+  const skeletonStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }],
+    };
+  });
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -26,7 +51,6 @@ const Result = () => {
         const response = await fetch(url);
         const html = await response.text();
         
-        // 정규식으로 originalUrl 추출
         const originalUrlMatch = html.match(/originalUrl:"([^"]+)"/);
         if (originalUrlMatch && originalUrlMatch[1]) {
           setImageUrl(originalUrlMatch[1]);
@@ -65,15 +89,19 @@ const Result = () => {
           <Text style={styles.subText}>맛있는 식사 되세요~</Text>
         </View>
 
-        {imageUrl && (
-          <View  style={styles.imageContainer}>
+        <View style={styles.imageContainer}>
+          {!imageUrl ? (
+            <View style={styles.skeletonContainer}>
+              <Animated.View style={[styles.skeletonShimmer, skeletonStyle]} />
+            </View>
+          ) : (
             <Image 
               source={{ uri: imageUrl }} 
               style={styles.image}
               resizeMode="cover"
             />
-          </View>
-        )}
+          )}
+        </View>
 
         <View style={styles.content}>
           <View style={styles.titleContainer}>
@@ -109,15 +137,16 @@ const Result = () => {
           <TouchableOpacity style={styles.mapButton} onPress={handleMap}>
             <Text style={styles.mapButtonText}>지도에서 보기</Text>
           </TouchableOpacity>
+
           <TouchableOpacity 
-          style={[styles.mapButton, styles.retryButton]} 
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={[styles.mapButtonText, { color: colors.gray500 }]}>다시하기</Text>
-        </TouchableOpacity>
+            style={[styles.mapButton, styles.retryButton]} 
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={[styles.mapButtonText, { color: colors.gray500 }]}>다시하기</Text>
+          </TouchableOpacity>
         </View>
+        <AdBanner />
       </View>
-      <AdBanner />
     </SafeAreaView>
   );
 };
@@ -144,9 +173,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.gray500,
   },
-  content: {
-    padding: 24,
-  },
   imageContainer: {
     paddingHorizontal: 20,
   },
@@ -154,6 +180,24 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     marginBottom: 16,
+    borderRadius: 8,
+  },
+  skeletonContainer: {
+    width: '100%',
+    height: 200,
+    backgroundColor: colors.gray100,
+    overflow: 'hidden',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  skeletonShimmer: {
+    width: '100%',
+    height: '200%',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    transform: [{ rotate: '45deg' }],
+  },
+  content: {
+    padding: 24,
   },
   titleContainer: {
     marginBottom: 24,
@@ -187,6 +231,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     backgroundColor: '#fff',
   },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
   mapButton: {
     backgroundColor: colors.primary,
     padding: 16,
@@ -205,11 +254,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
   },
 });
 
