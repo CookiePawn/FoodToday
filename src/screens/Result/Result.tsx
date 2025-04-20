@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Image, SafeAreaView } from 'react-native';
 import { colors } from '@/constants';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -48,61 +48,77 @@ const Result = () => {
   const handleMap = () => {
     const addressParts = restaurant.address.split(' ');
     const region = addressParts[0] + ' ' + addressParts[1];
-    const searchQuery = `${region} ${restaurant.title}`;
+    const title = restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '');
+    
+    // 모든 검색어에 음식 키워드 추가
+    const searchQuery = `${region} ${title} 음식`;
+      
     const url = `https://map.naver.com/v5/search/${encodeURIComponent(searchQuery)}`;
     Linking.openURL(url);
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <AdBanner />
-      <View style={styles.card}>
-        {imageUrl && (
-          <Image 
-            source={{ uri: imageUrl }} 
-            style={styles.image}
-            resizeMode="cover"
-          />
-        )}
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
         <View style={styles.header}>
-          <Text style={styles.title}>{restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '')}</Text>
-          <Text style={styles.category}>{restaurant.category}</Text>
+          <Text style={styles.headerText}>음식점을 추천해드렸습니다!</Text>
+          <Text style={styles.subText}>맛있는 식사 되세요~</Text>
         </View>
 
-        <View style={styles.infoContainer}>
-          <View style={styles.infoRow}>
-            <MapPinIcon width={20} height={20} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
-            <Text style={styles.infoText}>{restaurant.address}</Text>
+        {imageUrl && (
+          <View  style={styles.imageContainer}>
+            <Image 
+              source={{ uri: imageUrl }} 
+              style={styles.image}
+              resizeMode="cover"
+            />
+          </View>
+        )}
+
+        <View style={styles.content}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '')}</Text>
+            <Text style={styles.category}>{restaurant.category}</Text>
           </View>
 
-          {restaurant.telephone && (
-            <TouchableOpacity style={styles.infoRow} onPress={handleCall}>
-              <PhoneIcon width={20} height={20} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
-              <Text style={styles.infoText}>{restaurant.telephone}</Text>
-            </TouchableOpacity>
-          )}
+          <View style={styles.infoContainer}>
+            <View style={styles.infoRow}>
+              <MapPinIcon width={20} height={20} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
+              <Text style={styles.infoText}>{restaurant.address}</Text>
+            </View>
 
-          {restaurant.link && (
-            <TouchableOpacity style={styles.infoRow} onPress={() => Linking.openURL(restaurant.link)}>
-              <GlobeIcon width={20} height={20} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
-              <Text style={styles.infoText}>웹사이트 보기</Text>
-            </TouchableOpacity>
-          )}
+            {restaurant.telephone && (
+              <TouchableOpacity style={styles.infoRow} onPress={handleCall}>
+                <PhoneIcon width={20} height={20} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
+                <Text style={styles.infoText}>{restaurant.telephone}</Text>
+              </TouchableOpacity>
+            )}
+
+            {restaurant.link && (
+              <TouchableOpacity style={styles.infoRow} onPress={() => Linking.openURL(restaurant.link)}>
+                <GlobeIcon width={20} height={20} fill={colors.white} stroke={colors.primary} strokeWidth={2} />
+                <Text style={styles.infoText}>웹사이트 보기</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
+      </ScrollView>
 
-        <TouchableOpacity style={styles.mapButton} onPress={handleMap}>
-          <Text style={styles.mapButtonText}>지도에서 보기</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
+      <View style={styles.buttonContainer}>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.mapButton} onPress={handleMap}>
+            <Text style={styles.mapButtonText}>지도에서 보기</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
           style={[styles.mapButton, styles.retryButton]} 
           onPress={() => navigation.goBack()}
         >
           <Text style={[styles.mapButtonText, { color: colors.gray500 }]}>다시하기</Text>
         </TouchableOpacity>
+        </View>
       </View>
       <AdBanner />
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -111,27 +127,46 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  card: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.gray200,
+  scrollView: {
+    flex: 1,
   },
   header: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    padding: 24,
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.secondary,
+    marginBottom: 8,
+  },
+  subText: {
+    fontSize: 16,
+    color: colors.gray500,
+  },
+  content: {
+    padding: 24,
+  },
+  imageContainer: {
+    paddingHorizontal: 20,
+  },
+  image: {
+    width: '100%',
+    height: 200,
     marginBottom: 16,
   },
-  category: {
-    fontSize: 14,
-    color: '#666',
+  titleContainer: {
+    marginBottom: 24,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: colors.secondary,
+    marginBottom: 8,
+  },
+  category: {
+    fontSize: 14,
+    color: colors.gray500,
   },
   infoContainer: {
     marginTop: 16,
@@ -139,7 +174,7 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 16,
   },
   infoText: {
     marginLeft: 8,
@@ -147,29 +182,34 @@ const styles = StyleSheet.create({
     color: colors.gray600,
     flex: 1,
   },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    backgroundColor: '#fff',
+  },
   mapButton: {
-    marginTop: 24,
     backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
+    marginBottom: 8,
+    flex: 1,
   },
   retryButton: {
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.gray200,
-    marginTop: 8,
+    flex: 1,
   },
   mapButtonText: {
     color: colors.white,
     fontSize: 16,
     fontWeight: 'bold',
   },
-  image: {
-    width: '100%',
-    height: 200,
-    borderRadius: 12,
-    marginBottom: 16,
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
   },
 });
 
