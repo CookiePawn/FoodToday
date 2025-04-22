@@ -36,15 +36,15 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 // 애니메이션 값 정의
-const startRadius = 200;
+const startRadius = 100;
 const startOpacity = 1;
-const maxRadius = screenWidth * 0.8;
+const maxRadius = 200;
 const maxRadius2 = maxRadius * 1.3;
 const firstCircleDuration = 1500;
-const secondCircleDuration = 2100;
+const secondCircleDuration = 1900;
 
 const iconSize = 40;
-const iconBottom = 100;
+const iconBottom = screenHeight * 0.40 - iconSize / 2;
 const iconLeft = screenWidth / 2 - iconSize / 2;
 
 // 마커 위치를 위한 타입 정의
@@ -66,7 +66,6 @@ const CirclePulse = () => {
   const [markers, setMarkers] = useState<MarkerPosition[]>([]);
   const [showMarkers, setShowMarkers] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [restaurants, setRestaurants] = useState<NaverSearchResult[]>([]);
   const [showButton, setShowButton] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [refreshing, setRefreshing] = useState(false);
@@ -82,7 +81,7 @@ const CirclePulse = () => {
   const opacity2 = useSharedValue(0);
 
   const centerX = screenWidth / 2;
-  const centerY = screenHeight - 100;
+  const centerY = screenHeight / 2 + 50;
 
   const [animationCounter, setAnimationCounter] = React.useState(0);
 
@@ -150,11 +149,11 @@ const CirclePulse = () => {
   useEffect(() => {
     const generateRandomMarkers = () => {
       const newMarkers: MarkerPosition[] = Array.from({ length: 5 }, () => ({
-        x: Math.random() * (screenWidth - 80) + 40,
-        y: Math.random() * (screenHeight * 0.3) + screenHeight * 0.7,
+        x: Math.random() * (screenWidth - 50),
+        y: Math.random() * (screenHeight * 0.9) + screenHeight * 0.8,                 
       }));
-      setMarkers(newMarkers);
-
+      setMarkers(newMarkers);     
+               
       // 5초 후 버튼 표시
       setTimeout(() => {
         setShowButton(true);
@@ -210,13 +209,6 @@ const CirclePulse = () => {
       // 랜덤 카테고리 선택
       const randomCategory = foodCategories[Math.floor(Math.random() * foodCategories.length)];
       setSelectedCategory(randomCategory);
-      
-      // 랜덤 마커 위치 새로 생성
-      const newMarkers: MarkerPosition[] = Array.from({ length: 5 }, () => ({
-        x: Math.random() * (screenWidth - 80) + 40,
-        y: Math.random() * (screenHeight * 0.3) + screenHeight * 0.7,
-      }));
-      setMarkers(newMarkers);
     } catch (error) {
       console.error('카테고리 변경 중 오류:', error);
     } finally {
