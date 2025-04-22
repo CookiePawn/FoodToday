@@ -25,69 +25,53 @@ const Privacy = () => {
       </View>
       <ScrollView style={styles.content}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제1조 (개인정보의 처리 목적)</Text>
+          <Text style={styles.sectionTitle}>제1조 (수집하는 개인정보 항목)</Text>
           <Text style={styles.sectionContent}>
             FoodToday(이하 "개발자")는 사용자의 위치정보를 다음과 같은 목적으로만 사용하며, 서버에 저장하지 않습니다.{'\n\n'}
-            1. 서비스 제공{'\n'}
-            - 사용자의 현재 위치 기반 주변 음식점 검색을 위한 위치정보 처리{'\n\n'}
-            2. 기타{'\n'}
-            - 위치정보는 앱 내에서만 사용되며, 서버에 전송하거나 저장하지 않습니다.{'\n\n'}
-            3. 향후 서비스 개선을 위한 통계{'\n'}
-            - 추후 서비스 개선을 위해 익명화된 사용 데이터를 수집할 수 있습니다.{'\n'}
-            - 이 경우 별도의 개인정보 처리방침 개정을 통해 사전에 공지할 예정입니다.
+            1. 위치정보{'\n'}
+              - 앱 사용 시 사용자의 현재 위치 정보{'\n'}
+              - 위치 정보는 일시적으로만 사용되며 저장되지 않습니다{'\n\n'}
+            2. 광고 관련 정보{'\n'}
+              - Google AdMob을 통해 수집되는 광고 식별자 및 관련 정보{'\n'}
+              - 자세한 내용은 Google AdMob의 개인정보처리방침을 참고해 주세요
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제2조 (개인정보의 처리 및 보유 기간)</Text>
+          <Text style={styles.sectionTitle}>제2조 (개인정보의 수집 및 이용목적)</Text>
           <Text style={styles.sectionContent}>
-            개발자는 서버를 운영하지 않으므로 개인정보를 저장하지 않습니다.{'\n\n'}
-            - 위치정보: 앱 사용 중에만 사용되며, 앱 종료 시 즉시 삭제됩니다.
+            1. 위치정보{'\n'}
+            - 사용자 주변의 맛집 정보 제공{'\n\n'}
+            2. 광고 관련 정보{'\n'}
+              - 맞춤형 광고 제공{'\n'}
+              - 광고 성과 측정
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제3조 (개인정보의 제3자 제공)</Text>
+          <Text style={styles.sectionTitle}>제3조 (개인정보의 보유 및 이용기간)</Text>
           <Text style={styles.sectionContent}>
-            개발자는 서버를 운영하지 않으므로 개인정보를 제3자에게 제공하지 않습니다.
+            1. 위치정보: 앱 사용 중에만 일시적으로 이용되며, 별도로 저장하지 않습니다.{'\n\n'}
+            2. 광고 관련 정보: Google AdMob의 정책에 따라 처리됩니다.
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제4조 (개인정보처리의 위탁)</Text>
+          <Text style={styles.sectionTitle}>제4조 (이용자의 권리)</Text>
           <Text style={styles.sectionContent}>
-            개발자는 서버를 운영하지 않으므로 개인정보 처리업무를 위탁하지 않습니다.
+            1. 위치정보 수집 거부{'\n'}
+              - 기기의 설정에서 위치 정보 제공을 거부할 수 있습니다{'\n'}
+              - 위치 정보 제공을 거부할 경우 일부 서비스 이용이 제한될 수 있습니다{'\n\n'}
+            2. 광고 개인화 거부{'\n'}
+              - 기기의 설정에서 광고 개인화를 거부할 수 있습니다{'\n'}
+              - 이 경우 맞춤형 광고가 제공되지 않을 수 있습니다
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제5조 (정보주체의 권리·의무 및 그 행사방법)</Text>
+          <Text style={styles.sectionTitle}>제5조 (개인정보보호 책임자)</Text>
           <Text style={styles.sectionContent}>
-            개발자는 서버를 운영하지 않으므로 개인정보를 저장하지 않습니다. 따라서 개인정보 열람, 정정, 삭제, 처리정지 요구가 불필요합니다.
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제6조 (개인정보의 파기)</Text>
-          <Text style={styles.sectionContent}>
-            개발자는 서버를 운영하지 않으므로 개인정보를 저장하지 않습니다. 위치정보는 앱 종료 시 자동으로 삭제됩니다.
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제7조 (개인정보의 안전성 확보 조치)</Text>
-          <Text style={styles.sectionContent}>
-            개발자는 서버를 운영하지 않으므로 개인정보를 저장하지 않습니다. 위치정보는 앱 내에서만 사용되며, 앱 종료 시 자동으로 삭제됩니다.
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제8조 (개인정보 보호책임자)</Text>
-          <Text style={styles.sectionContent}>
-            개발자는 서버를 운영하지 않으므로 개인정보를 저장하지 않습니다. 다만, 서비스 이용과 관련하여 궁금한 사항이 있으시면 아래 연락처로 문의해 주시기 바랍니다.{'\n\n'}
-            개발자{'\n'}
-            성명: 안준철{'\n'}
-            연락처: 010-8915-2856{'\n'}
+            이름: 안준철{'\n'}
             이메일: dev.jcahn@gmail.com
           </Text>
         </View>

@@ -15,7 +15,7 @@ const Terms = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
@@ -25,66 +25,44 @@ const Terms = () => {
       </View>
       <ScrollView style={styles.content}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제1조 (목적)</Text>
+          <Text style={styles.sectionTitle}>제 1 조 (목적)</Text>
           <Text style={styles.sectionContent}>
-            이 약관은 FoodToday(이하 "개발자")가 제공하는 위치 기반 음식점 검색 서비스의 이용과 관련하여 개발자와 이용자 간의 권리, 의무 및 책임사항 등을 규정함을 목적으로 합니다.
+            이 약관은 오늘의 한끼 앱(이하 "앱")의 이용과 관련하여 필요한 사항을 규정함을 목적으로 합니다.
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제2조 (정의)</Text>
+          <Text style={styles.sectionTitle}>제 2 조 (위치정보의 수집 및 이용)</Text>
           <Text style={styles.sectionContent}>
-            1. "서비스"라 함은 개발자가 제공하는 위치 기반 음식점 검색 애플리케이션을 의미합니다.{'\n\n'}
-            2. "이용자"라 함은 서비스에 접속하여 이 약관에 따라 개발자가 제공하는 서비스를 이용하는 사용자를 말합니다.
+            1. 앱은 사용자의 위치 정보를 수집하여 주변 맛집 검색 서비스를 제공합니다.{'\n\n'}
+            2. 위치 정보는 앱 사용 시에만 일시적으로 활용되며, 별도로 저장되거나 서버에 전송되지 않습니다.{'\n\n'}
+            3. 사용자는 기기의 설정에서 언제든지 위치 정보 제공을 거부할 수 있으며, 이 경우 위치 기반 서비스는 이용할 수 없습니다.
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제3조 (서비스의 제공)</Text>
+          <Text style={styles.sectionTitle}>제 3 조 (광고)</Text>
           <Text style={styles.sectionContent}>
-            1. 개발자는 다음과 같은 서비스를 제공합니다:{'\n'}
-            - 사용자의 현재 위치 기반 주변 음식점 검색{'\n'}
-            - 음식점 기본 정보 제공{'\n\n'}
-            2. 개발자는 서비스의 품질 향상을 위해 필요한 경우 서비스의 일부를 수정, 변경, 중단할 수 있습니다.
+            1. 앱은 무료로 제공되며, 서비스 유지를 위해 광고가 포함될 수 있습니다.{'\n\n'}
+            2. 광고는 제3자(Google AdMob 등)에 의해 제공될 수 있으며, 해당 광고 제공자의 개인정보 처리방침이 적용될 수 있습니다.
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제4조 (이용자의 의무)</Text>
+          <Text style={styles.sectionTitle}>제 4 조 (면책사항)</Text>
           <Text style={styles.sectionContent}>
-            1. 이용자는 다음 행위를 하여서는 안 됩니다:{'\n'}
-            - 서비스의 운영을 고의로 방해하는 행위{'\n'}
-            - 허위 정보를 게시하는 행위{'\n\n'}
-            2. 이용자는 관계법령, 이 약관의 규정, 이용안내 등을 준수하여야 합니다.
+            1. 앱에서 제공하는 정보는 참고 사항이며, 실제 매장 정보와 차이가 있을 수 있습니다.{'\n\n'}
+            2. 개인 개발 프로젝트로 운영되는 본 앱의 특성상, 서비스는 예고 없이 변경되거나 중단될 수 있습니다.
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제5조 (서비스 이용의 제한 및 중지)</Text>
+          <Text style={styles.sectionTitle}>제 5 조 (문의사항)</Text>
           <Text style={styles.sectionContent}>
-            1. 개발자는 다음 각 호에 해당하는 경우 서비스 이용을 제한하거나 중지할 수 있습니다:{'\n'}
-            - 이용자가 이 약관의 의무를 위반한 경우{'\n'}
-            - 서비스의 안정적인 운영을 방해하는 경우{'\n\n'}
-            2. 개발자는 서비스 이용의 제한 또는 중지에 대해 사전 통지할 수 있습니다.
+            서비스 이용 중 문의사항이 있으시면 앱 내 제공된 이메일 주소로 연락해 주시기 바랍니다.
           </Text>
         </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제6조 (책임의 한계)</Text>
-          <Text style={styles.sectionContent}>
-            1. 개발자는 천재지변 또는 이에 준하는 불가항력으로 인하여 서비스를 제공할 수 없는 경우에는 서비스 제공에 관한 책임이 면제됩니다.{'\n\n'}
-            2. 개발자는 이용자의 귀책사유로 인한 서비스 이용의 장애에 대하여 책임을 지지 않습니다.
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>제7조 (기타)</Text>
-          <Text style={styles.sectionContent}>
-            1. 이 약관에 명시되지 않은 사항은 관련법령의 규정에 따릅니다.{'\n\n'}
-            2. 이 약관의 해석에 관하여는 개발자와 이용자 간에 합의하여 결정하며, 합의가 이루어지지 않는 경우 대한민국 법을 적용합니다.
-          </Text>
-        </View>
-
+        
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>부칙</Text>
           <Text style={styles.sectionContent}>

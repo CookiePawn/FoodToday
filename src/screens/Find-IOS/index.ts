@@ -1,1 +1,1 @@
-export { default as FindIOS } from './find';
+export { default as FindIOS } from './Find';
