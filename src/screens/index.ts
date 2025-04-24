@@ -6,3 +6,4 @@ export * from './Permission';
 export * from './License';
 export * from './Privacy';
 export * from './Terms';
+export * from './Tutorial';

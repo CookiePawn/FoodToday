@@ -12,6 +12,7 @@ export type RootStackParamList = {
   License: undefined;
   Privacy: undefined;
   Terms: undefined;
+  Tutorial: undefined;
 };
 
 declare global {
