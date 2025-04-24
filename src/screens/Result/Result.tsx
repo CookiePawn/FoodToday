@@ -14,6 +14,7 @@ import Animated, {
   withSequence,
   Easing
 } from 'react-native-reanimated';
+import { searchRestaurantImage } from '@/services';
 
 type ResultScreenRouteProp = RouteProp<RootStackParamList, 'Result'>;
 
@@ -22,6 +23,7 @@ const Result = () => {
   const { restaurant } = route.params;
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(true);
   const translateX = useSharedValue(-200);
 
   useEffect(() => {
@@ -41,26 +43,26 @@ const Result = () => {
   });
 
   useEffect(() => {
-    const fetchImage = async () => {
+    const loadImage = async () => {
+      setImageLoading(true);
       try {
         const addressParts = restaurant.address.split(' ');
         const region = addressParts[0] + ' ' + addressParts[1];
-        const searchQuery = `${region} ${restaurant.title}`;
-        const url = `https://search.naver.com/search.naver?where=image&sm=tab_jum&query=${encodeURIComponent(searchQuery)}&filter=1&cate=food`;
+        const title = restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '');
+        const searchQuery = `${region} ${title}`;
         
-        const response = await fetch(url);
-        const html = await response.text();
+        const fetchedImageUrl = await searchRestaurantImage(searchQuery);
+        setImageUrl(fetchedImageUrl);
         
-        const originalUrlMatch = html.match(/originalUrl:"([^"]+)"/);
-        if (originalUrlMatch && originalUrlMatch[1]) {
-          setImageUrl(originalUrlMatch[1]);
-        }
       } catch (error) {
-        console.error('Error fetching image:', error);
+        console.error('Error loading image via API:', error);
+        setImageUrl(null);
+      } finally {
+        setImageLoading(false);
       }
     };
 
-    fetchImage();
+    loadImage();
   }, [restaurant]);
 
   const handleCall = () => {
@@ -90,16 +92,20 @@ const Result = () => {
         </View>
 
         <View style={styles.imageContainer}>
-          {!imageUrl ? (
+          {imageLoading ? (
             <View style={styles.skeletonContainer}>
               <Animated.View style={[styles.skeletonShimmer, skeletonStyle]} />
             </View>
-          ) : (
+          ) : imageUrl ? (
             <Image 
               source={{ uri: imageUrl }} 
               style={styles.image}
               resizeMode="cover"
             />
+          ) : (
+            <View style={styles.noImageContainer}>
+              <Text style={styles.noImageText}>이미지 없음</Text>
+            </View>
           )}
         </View>
 
@@ -175,6 +181,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 200,
   },
   image: {
     width: '100%',
@@ -254,6 +263,19 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  noImageContainer: {
+    width: '100%',
+    height: 200,
+    backgroundColor: colors.gray100,
+    borderRadius: 8,
+    marginBottom: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noImageText: {
+    color: colors.gray400,
+    fontSize: 16,
   },
 });
 

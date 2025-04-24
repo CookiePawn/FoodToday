@@ -26,7 +26,7 @@ export const searchNearbyRestaurants = async (location: Location, category: stri
     }
 
     // 랜덤 키워드 배열
-    const keywords = ['음식', '음식점', '식당', '밥집', '점심', '저녁', '맛집', '추천', '추천식당', '추천음식점', '추천맛집'];
+    const keywords = ['음식', '음식점', '식당', '점심', '저녁'];
     // 랜덤 키워드 선택
     const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
 
@@ -64,5 +64,39 @@ export const searchNearbyRestaurants = async (location: Location, category: stri
       console.error('네이버 API 오류:', error.message);
     }
     return { items: [] };
+  }
+};
+
+export const searchRestaurantImage = async (query: string): Promise<string | null> => {
+  try {
+    const url = `https://openapi.naver.com/v1/search/image?query=${encodeURIComponent(query)}&display=1&start=1&sort=sim`;
+
+    const response = await axios.get(url, {
+      headers: {
+        'X-Naver-Client-Id': NAVER_CLIENT_ID,
+        'X-Naver-Client-Secret': NAVER_CLIENT_SECRET,
+      },
+    });
+
+    if (response.data?.items && response.data.items.length > 0) {
+      // 첫 번째 이미지의 link 또는 thumbnail URL 반환
+      return response.data.items[0].link || response.data.items[0].thumbnail || null;
+    } else {
+      console.log('No image found for query:', query);
+      return null;
+    }
+  } catch (error: any) {
+    if (error.response) {
+      console.error('네이버 이미지 API 응답 오류:', {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+      });
+    } else if (error.request) {
+      console.error('네이버 이미지 API 요청 실패:', error.request);
+    } else {
+      console.error('네이버 이미지 API 오류:', error.message);
+    }
+    return null;
   }
 }; 
