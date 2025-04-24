@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform, Linking } from 'react-native';
-import { colors } from '@/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { colors, StorageKeys } from '@/constants';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/models';
@@ -14,11 +15,12 @@ import Animated, {
   withDelay,
   Easing 
 } from 'react-native-reanimated';
+import { AttendancePopup } from '@/components';
 
 const Permission = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [isLoading, setIsLoading] = useState(true);
-
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
   // 애니메이션 값
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(20);
@@ -31,7 +33,7 @@ const Permission = () => {
   });
 
   useEffect(() => {
-    checkPermission();
+    checkPermissionAndNavigate();
   }, []);
 
   useEffect(() => {
@@ -47,7 +49,26 @@ const Permission = () => {
     }
   }, [isLoading]);
 
-  const checkPermission = async () => {
+  // YYYY-MM-DD 형식으로 날짜 반환
+  const getISODate = (date: Date): string => {
+    return date.toISOString().split('T')[0];
+  };
+
+  // 출석 팝업 표시 여부 확인
+  const shouldShowAttendancePopup = async (): Promise<boolean> => {
+    const todayStr = getISODate(new Date());
+    try {
+      const lastVisitStr = await AsyncStorage.getItem(StorageKeys.ATTENDANCE_LAST_VISIT);
+      // 오늘 방문 기록이 없으면 팝업 표시
+      return lastVisitStr !== todayStr;
+    } catch (error) {
+      console.error('Failed to check last visit date:', error);
+      return false; // 에러 시 팝업 표시 안 함
+    }
+  };
+
+  // 권한 확인 및 네비게이션 로직
+  const checkPermissionAndNavigate = async () => {
     const locationPermission = Platform.select({
       ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
       android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
@@ -57,20 +78,18 @@ const Permission = () => {
 
     const result = await check(locationPermission);
     if (result === RESULTS.GRANTED) {
-      navigation.navigate('Load');
-      return;
-    }
-    setIsLoading(false);
-  };
-
-  const handleOpenSettings = () => {
-    if (Platform.OS === 'ios') {
-      Linking.openURL('app-settings:');
+      const shouldShowPopup = await shouldShowAttendancePopup();
+      if (shouldShowPopup) {
+        setIsPopupVisible(true); // 출석 팝업 표시
+      } else {
+        navigation.navigate('Load'); // 바로 Load 페이지로 이동
+      }
     } else {
-      Linking.openSettings();
+      setIsLoading(false); // 권한 없으면 권한 요청 화면 표시
     }
   };
 
+  // 권한 요청 로직
   const handleRequestPermission = async () => {
     const locationPermission = Platform.select({
       ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
@@ -81,15 +100,38 @@ const Permission = () => {
 
     const result = await request(locationPermission);
     if (result === RESULTS.GRANTED) {
-      navigation.navigate('Load');
+      // 권한 허용 후 다시 출석 체크 및 네비게이션
+      const shouldShowPopup = await shouldShowAttendancePopup();
+      if (shouldShowPopup) {
+        setIsPopupVisible(true);
+      } else {
+        navigation.navigate('Load');
+      }
     } else if (result === RESULTS.DENIED || result === RESULTS.BLOCKED) {
       handleOpenSettings();
     }
   };
 
+  // 설정 화면 열기
+  const handleOpenSettings = () => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:');
+    } else {
+      Linking.openSettings();
+    }
+  };
+
+  // 팝업 닫기 핸들러
+  const handlePopupClose = () => {
+    setIsPopupVisible(false);
+    navigation.navigate('Load'); // 팝업 닫힌 후 Load 페이지로 이동
+  };
+
   if (isLoading) {
     return (
-      <View style={styles.container}/>
+      <View style={styles.container}>
+        <AttendancePopup isVisible={isPopupVisible} onClose={handlePopupClose} />
+      </View>
     );
   }
 
@@ -147,6 +189,8 @@ const Permission = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <AttendancePopup isVisible={isPopupVisible} onClose={handlePopupClose} />
     </Animated.View>
   );
 };
