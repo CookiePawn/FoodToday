@@ -46,6 +46,7 @@ const Tutorial = () => {
   const navigation = useNavigation<TutorialNavigationProp>();
   const [currentPage, setCurrentPage] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // AsyncStorage에서 튜토리얼 완료 여부 확인
@@ -56,6 +57,7 @@ const Tutorial = () => {
           // 이미 완료했으면 Permission 화면으로 바로 이동
           navigation.replace('Permission');
         }
+        setIsLoading(false);
         // 완료되지 않았으면 현재 화면 (튜토리얼) 유지
       } catch (error) {
         console.error('Failed to check tutorial status:', error);
@@ -84,6 +86,12 @@ const Tutorial = () => {
     );
     setCurrentPage(pageIndex);
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}/>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -184,6 +192,11 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: colors.white,
   },
 });
 

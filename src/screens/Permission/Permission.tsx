@@ -127,14 +127,20 @@ const Permission = () => {
     navigation.navigate('Load'); // 팝업 닫힌 후 Load 페이지로 이동
   };
 
+  // 1. 팝업이 보여야 하는 경우, 팝업만 렌더링
+  if (isPopupVisible) {
+    // isVisible prop은 Modal 내부에서 사용되므로 true 전달
+    return <AttendancePopup isVisible={true} onClose={handlePopupClose} />;
+  }
+
+  // 2. 팝업이 보이지 않고 로딩 중인 경우, 로딩 UI 렌더링
   if (isLoading) {
     return (
-      <View style={styles.container}>
-        <AttendancePopup isVisible={isPopupVisible} onClose={handlePopupClose} />
-      </View>
+      <View style={styles.container} />
     );
   }
 
+  // 3. 팝업이 보이지 않고 로딩도 완료된 경우, 권한 요청 UI 렌더링
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       <View style={styles.content}>
@@ -189,8 +195,6 @@ const Permission = () => {
           </TouchableOpacity>
         </View>
       </View>
-
-      <AttendancePopup isVisible={isPopupVisible} onClose={handlePopupClose} />
     </Animated.View>
   );
 };
@@ -200,6 +204,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
     padding: 24,
+  },
+  loadingContainer: { // 로딩 중 화면 컨테이너
+    flex: 1,
+    backgroundColor: colors.white, // 로딩 중 배경색
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     flex: 1,
