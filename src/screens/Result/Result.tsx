@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   mapButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,  
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
