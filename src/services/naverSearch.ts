@@ -25,7 +25,13 @@ export const searchNearbyRestaurants = async (location: Location, category: stri
       return { items: [] };
     }
 
-    const query = `${location.district} ${category}`;
+    // 랜덤 키워드 배열
+    const keywords = ['음식', '음식점', '식당', '밥집', '점심', '저녁', '맛집', '추천', '추천식당', '추천음식점', '추천맛집'];
+    // 랜덤 키워드 선택
+    const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+
+    // 랜덤 키워드를 포함한 검색어 생성
+    const query = `${location.district} ${category} ${randomKeyword}`;
     
     const url = `https://openapi.naver.com/v1/search/local.json?query=${encodeURIComponent(query)}&display=10&start=1&sort=random`;
 

@@ -5,7 +5,7 @@ import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/models';
 import { GlobeIcon, MapPinIcon, PhoneIcon } from '@/assets';
-import AdBanner from '@/components/AdBanner';
+import { AdBanner} from '@/components';
 import Animated, { 
   useAnimatedStyle, 
   useSharedValue, 
@@ -75,9 +75,9 @@ const Result = () => {
     const title = restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '');
     
     // 모든 검색어에 음식 키워드 추가
-    const searchQuery = `${region} ${title} 음식`;
+    const searchQuery = `${region} ${title} 식당`;
       
-    const url = `https://map.naver.com/v5/search/${encodeURIComponent(searchQuery)}`;
+    const url = `https://map.naver.com/v5/search/${encodeURIComponent(searchQuery.replace(/<b>/g, '').replace(/<\/b>/g, ''))}`;
     Linking.openURL(url);
   };
 
