@@ -158,12 +158,13 @@ const styles = StyleSheet.create({
     height: screenHeight, // ScrollView 높이에 맞춤
   },
   paginationContainer: {
+    height: 80,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 10,
     position: 'absolute', // 화면 하단 고정
-    bottom: 80, // 버튼 위 간격
+    bottom: 0, // 버튼 위 간격
     left: 0,
     right: 0,
     backgroundColor: '#FDA66F',
