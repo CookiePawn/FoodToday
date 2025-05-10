@@ -1,6 +1,6 @@
 // CirclePulse.tsx
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Image, useWindowDimensions, Text, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, useWindowDimensions, Text, TouchableOpacity, RefreshControl, ScrollView, Alert } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import Animated, {
   useSharedValue,
@@ -18,6 +18,7 @@ import { searchNearbyRestaurants } from '@/services';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, NaverSearchResult } from '@/models';
+import NoRestaurantBottomSheet from '@/components/NoRestaurantBottomSheet';
 
 const SCREEN_RATIO = {
   LOCATION_TOP: 0.1,
@@ -67,6 +68,7 @@ const CirclePulse = () => {
   const [showMarkers, setShowMarkers] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [showButton, setShowButton] = useState(false);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -224,11 +226,20 @@ const CirclePulse = () => {
       const { items: restaurants } = await searchNearbyRestaurants(location, selectedCategory);
       console.log('검색된 음식점:', restaurants);
       
-      if (restaurants.length > 0) {
-        const randomIndex = Math.floor(Math.random() * restaurants.length);
-        const selectedRestaurant = restaurants[randomIndex];
-        navigation.navigate('Result', { restaurant: selectedRestaurant });
+      if (!restaurants || restaurants.length === 0) {
+        setShowBottomSheet(true);
+        return;
       }
+
+      const randomIndex = Math.floor(Math.random() * restaurants.length);
+      const selectedRestaurant = restaurants[randomIndex];
+
+      if (!selectedRestaurant || !selectedRestaurant.title) {
+        console.log('선택된 음식점 정보가 유효하지 않습니다:', selectedRestaurant);
+        return;
+      }
+
+      navigation.navigate('Result', { restaurant: selectedRestaurant });
     } catch (error) {
       console.error('음식점 검색 중 오류:', error);
     }
@@ -348,6 +359,12 @@ const CirclePulse = () => {
           </TouchableOpacity>
         )}
       </View>
+
+      <NoRestaurantBottomSheet
+        visible={showBottomSheet}
+        onClose={() => setShowBottomSheet(false)}
+        onRetry={onRefresh}
+      />
     </ScrollView>
   );
 };
