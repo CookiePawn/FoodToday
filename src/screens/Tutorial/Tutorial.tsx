@@ -27,6 +27,7 @@ import {
 
 // 화면 너비 얻기
 const { width: screenWidth } = Dimensions.get('window');
+const { height: screenHeight } = Dimensions.get('window');
 
 // 이미지 배열
 const tutorialImages = [
@@ -154,16 +155,19 @@ const styles = StyleSheet.create({
   },
   tutorialImage: {
     width: screenWidth,
-    height: '100%', // ScrollView 높이에 맞춤
+    height: screenHeight, // ScrollView 높이에 맞춤
   },
   paginationContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 10,
     position: 'absolute', // 화면 하단 고정
-    top: 80, // 버튼 위 간격
+    bottom: 80, // 버튼 위 간격
     left: 0,
     right: 0,
+    backgroundColor: '#FDA66F',
+    zIndex: 10,
   },
   paginationDot: {
     width: 8,
@@ -187,6 +191,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
+    zIndex: 100,
   },
   completeButtonText: {
     color: colors.primary,

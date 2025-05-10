@@ -87,8 +87,7 @@ const Result = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>음식점을 추천해드렸습니다!</Text>
-          <Text style={styles.subText}>맛있는 식사 되세요~</Text>
+          <Text style={styles.headerText}>추천 음식점</Text>
         </View>
 
         <View style={styles.imageContainer}>
@@ -111,8 +110,13 @@ const Result = () => {
 
         <View style={styles.content}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>{restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '')}</Text>
-            <Text style={styles.category}>{restaurant.category}</Text>
+            <View style={styles.categoryImageContainer}>
+              {/* <Image source={require('@/assets/images/category.png')} style={styles.categoryImage} /> */}
+            </View>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>{restaurant.title.replace(/<b>/g, '').replace(/<\/b>/g, '')}</Text>
+              <Text style={styles.category}>{restaurant.category}</Text>
+            </View>
           </View>
 
           <View style={styles.infoContainer}>
@@ -166,30 +170,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    padding: 24,
-    alignItems: 'center',
+    padding: 20,
   },
   headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.secondary,
-    marginBottom: 8,
+    fontSize: 20,
+    fontWeight: 600,
+    color: colors.gray600,
   },
   subText: {
     fontSize: 16,
     color: colors.gray500,
   },
   imageContainer: {
-    paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 200,
   },
   image: {
     width: '100%',
-    height: 200,
-    marginBottom: 16,
-    borderRadius: 8,
+    height: 300,
   },
   skeletonContainer: {
     width: '100%',
@@ -209,16 +208,33 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   titleContainer: {
-    marginBottom: 24,
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  categoryImageContainer: {
+    width: 45,
+    height: 45,
+    backgroundColor: colors.gray100,
+    borderRadius: 10,
+  },
+  categoryImage: {
+    width: 30,
+    height: 30,
+  },
+  titleRow: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: colors.secondary,
-    marginBottom: 8,
+    marginBottom: 5,
   },
   category: {
-    fontSize: 14,
+    fontSize: 12,
     color: colors.gray500,
   },
   infoContainer: {
@@ -231,7 +247,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     marginLeft: 8,
-    fontSize: 16,
+    fontSize: 14,
     color: colors.gray600,
     flex: 1,
   },
