@@ -12,6 +12,7 @@ const useCheckVersion = () => {
 
   useEffect(() => {
     const checkAppVersion = async () => {
+      if (__DEV__) return;
       const isNewVersionAvailable = await checkVersion({
         platform: Platform.OS,
         bundleId: bundleId,
@@ -19,7 +20,7 @@ const useCheckVersion = () => {
         country: 'kr',
       });
       if (isNewVersionAvailable) {
-        if ('0.0.4' !== isNewVersionAvailable.version) {
+        if (version !== isNewVersionAvailable.version) {
           setUpdateUrl(isNewVersionAvailable.url);
           setAlertVisible(true);
         }
