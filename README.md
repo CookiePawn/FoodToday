@@ -1,4 +1,36 @@
-# template-cli
+# FoodToday - 오늘의 한끼
+
+[플레이스토어 바로가기](https://play.google.com/store/apps/details?id=com.foodtoday&pcampaignid=web_share)
+
+# MEMBER
+
+홍유빈 - 디자인 
+[GitHub](https://github.com/binihaus)
+  
+안준철 - 개발
+[GitHub](https://github.com/CookiePawn)
+
+
+# Project Period
+
+    Main APP DEV. 2025/04/15 ~
+    
+
+## USING
+> https://github.com/CookiePawn/template-cli.git
+>
+> Naver Search API
+
+
+## Version
+>## v0.0.2-c2
+> [2025-04-22]
+>
+>
+>## v0.0.1-c1
+> [2025-04-21]
+
+
 
 ## React Native Cli 탬플릿
 > 프로젝트명 변경 가능
