@@ -7,7 +7,7 @@
 홍유빈 - 디자인 
 [GitHub](https://github.com/binihaus)
   
-안준철 - 개발
+안준철 - 개발/기획
 [GitHub](https://github.com/CookiePawn)
 
 
