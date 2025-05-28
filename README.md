@@ -14,7 +14,7 @@
 # Project Period
 
     Main APP DEV. 2025/04/16 ~
-    Google Play Stroe Production Upload. 2025/05/10
+    Google Play Store Production Upload. 2025/05/10
     
 
 ## USING
