@@ -2,6 +2,8 @@
 
 [플레이스토어 바로가기](https://play.google.com/store/apps/details?id=com.foodtoday&pcampaignid=web_share)
 
+[홈페이지 바로가기](https://foodtoday-web.netlify.app)
+
 # MEMBER
 
 홍유빈 - 디자인 
