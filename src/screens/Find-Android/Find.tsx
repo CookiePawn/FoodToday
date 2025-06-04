@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     right: 16,
     backgroundColor: colors.primary,
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 18,
     alignItems: 'center',
     zIndex: 1000,
   },
