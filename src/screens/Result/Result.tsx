@@ -150,7 +150,7 @@ const Result = () => {
 
           <TouchableOpacity 
             style={[styles.mapButton, styles.retryButton]} 
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.replace('FindAndroid')}
           >
             <Text style={[styles.mapButtonText, { color: colors.gray500 }]}>다시하기</Text>
           </TouchableOpacity>

@@ -19,6 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, NaverSearchResult } from '@/models';
 import NoRestaurantBottomSheet from '@/components/NoRestaurantBottomSheet';
+import { LoadRoulette } from '@/components';
 
 const SCREEN_RATIO = {
   LOCATION_TOP: 0.1,
@@ -274,7 +275,7 @@ const CirclePulse = () => {
           </Animated.Text>
         </View>
 
-        <Animated.View
+        {/* <Animated.View
           style={[
             styles.transformContainer,
             {
@@ -348,7 +349,7 @@ const CirclePulse = () => {
             stroke={colors.secondary}
             strokeWidth={2}
           />
-        </View>
+        </View> */}
 
         {showButton && (
           <TouchableOpacity 
@@ -365,6 +366,7 @@ const CirclePulse = () => {
         onClose={() => setShowBottomSheet(false)}
         onRetry={onRefresh}
       />
+      <LoadRoulette />
     </ScrollView>
   );
 };
@@ -422,10 +424,11 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 16,
     right: 16,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    zIndex: 1000,
   },
   buttonText: {
     color: colors.white,

@@ -10,3 +10,4 @@ export { default as Guide7 } from './guide_6.png';
 // 룰렛 이미지
 export { default as Roulette1 } from './roulette_1.png';
 export { default as Roulette2 } from './roulette_2.png';
+export { default as Roulette3 } from './roulette_3.png';
