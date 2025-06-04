@@ -1,5 +1,12 @@
 [
   {
+    "name": "@react-native-async-storage/async-storage",
+    "version": "2.1.2",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
     "name": "@react-native-community/geolocation",
     "version": "3.4.0",
     "license": "MIT",
@@ -49,8 +56,22 @@
     "repository": "N/A"
   },
   {
+    "name": "react-native-check-version",
+    "version": "1.4.0",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
     "name": "react-native-config",
     "version": "1.5.5",
+    "license": "MIT",
+    "description": "N/A",
+    "repository": "N/A"
+  },
+  {
+    "name": "react-native-device-info",
+    "version": "14.0.4",
     "license": "MIT",
     "description": "N/A",
     "repository": "N/A"
