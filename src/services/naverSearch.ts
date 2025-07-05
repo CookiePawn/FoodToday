@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Location, NaverSearchResult } from '@/models';
-import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '@env';
+import Config from 'react-native-config';
 
 // 랜덤한 음식 카테고리 배열
 const foodCategories = [
@@ -37,8 +37,8 @@ export const searchNearbyRestaurants = async (location: Location, category: stri
 
     const response = await axios.get(url, {
       headers: {
-        'X-Naver-Client-Id': NAVER_CLIENT_ID,
-        'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
+        'X-Naver-Client-Id': Config.NAVER_CLIENT_ID,
+        'X-Naver-Client-Secret': Config.NAVER_CLIENT_SECRET
       }
     });
 
@@ -73,8 +73,8 @@ export const searchRestaurantImage = async (query: string): Promise<string | nul
 
     const response = await axios.get(url, {
       headers: {
-        'X-Naver-Client-Id': NAVER_CLIENT_ID,
-        'X-Naver-Client-Secret': NAVER_CLIENT_SECRET,
+        'X-Naver-Client-Id': Config.NAVER_CLIENT_ID,
+        'X-Naver-Client-Secret': Config.NAVER_CLIENT_SECRET,
       },
     });
 
