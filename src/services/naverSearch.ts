@@ -2,23 +2,9 @@ import axios from 'axios';
 import { Location, NaverSearchResult } from '@/models';
 import Config from 'react-native-config';
 
-// 랜덤한 음식 카테고리 배열
-const foodCategories = [
-  '한식', '중식', '일식', '양식', '분식', '치킨', '피자', '햄버거',
-  '돈까스', '회', '초밥', '라면', '국밥', '찌개', '찜', '탕',
-  '샐러드', '샌드위치', '카페', '디저트', '베이커리'
-];
-
-// 랜덤한 검색어 생성 함수
-const generateRandomQuery = (district: string) => {
-  const randomCategory = foodCategories[Math.floor(Math.random() * foodCategories.length)];
-  return {
-    query: `${district} ${randomCategory}`,
-    category: randomCategory
-  };
-};
-
 export const searchNearbyRestaurants = async (location: Location, category: string): Promise<{ items: NaverSearchResult[] }> => {
+  console.log(Config.NAVER_CLIENT_ID);
+  console.log(Config.NAVER_CLIENT_SECRET);
   try {
     if (!location?.district) {
       console.error('위치 정보가 없습니다.');

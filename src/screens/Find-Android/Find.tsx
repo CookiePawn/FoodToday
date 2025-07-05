@@ -1,23 +1,19 @@
 // CirclePulse.tsx
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Image, useWindowDimensions, Text, TouchableOpacity, RefreshControl, ScrollView, Alert } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import { View, StyleSheet, Dimensions, useWindowDimensions, Text, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
 import Animated, {
   useSharedValue,
-  useAnimatedProps,
   withTiming,
-  runOnJS,
   Easing,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { UserIcon, MapPinIcon, mapBackground } from '@/assets';
 import { useAtomValue } from 'jotai';
 import { locationAtom } from '@/atoms';
 import { colors } from '@/constants';
 import { searchNearbyRestaurants } from '@/services';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList, NaverSearchResult } from '@/models';
+import { RootStackParamList } from '@/models';
 import NoRestaurantBottomSheet from '@/components/NoRestaurantBottomSheet';
 import { LoadRoulette } from '@/components';
 
@@ -34,26 +30,7 @@ const SCREEN_RATIO = {
   },
 };
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-
-// 애니메이션 값 정의
-const startRadius = 100;
-const startOpacity = 1;
-const maxRadius = 200;
-const maxRadius2 = maxRadius * 1.3;
-const firstCircleDuration = 1500;
-const secondCircleDuration = 1900;
-
-const iconSize = 40;
-const iconBottom = screenHeight * 0.40 - iconSize / 2;
-const iconLeft = screenWidth / 2 - iconSize / 2;
-
-// 마커 위치를 위한 타입 정의
-interface MarkerPosition {
-  x: number;
-  y: number;
-}
+const { height: screenHeight } = Dimensions.get('window');
 
 // 랜덤한 음식 카테고리 배열
 const foodCategories = [
@@ -65,47 +42,14 @@ const foodCategories = [
 const CirclePulse = () => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const location = useAtomValue(locationAtom);
-  const [markers, setMarkers] = useState<MarkerPosition[]>([]);
-  const [showMarkers, setShowMarkers] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [showButton, setShowButton] = useState(false);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [refreshing, setRefreshing] = useState(false);
 
-  // 기울기 애니메이션을 위한 shared value
-  const rotateX = useSharedValue(0);
   const locationOpacity = useSharedValue(1);
   const recommendOpacity = useSharedValue(0.3);
-
-  const radius1 = useSharedValue(startRadius);
-  const opacity1 = useSharedValue(startOpacity);
-  const radius2 = useSharedValue(startRadius);
-  const opacity2 = useSharedValue(0);
-
-  const centerX = screenWidth / 2;
-  const centerY = screenHeight / 2 + 50;
-
-  const [animationCounter, setAnimationCounter] = React.useState(0);
-
-  const resetAndRestartAnimation = () => {
-    'worklet';
-    radius1.value = startRadius;
-    opacity1.value = startOpacity;
-    radius2.value = startRadius;
-    opacity2.value = 0;
-    runOnJS(setAnimationCounter)(prev => prev + 1);
-  };
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { perspective: SCREEN_RATIO.MAP.PERSPECTIVE },
-        { rotateX: rotateX.value + 'deg' },
-        { translateY: 100 },
-      ],
-    };
-  });
 
   const locationStyle = useAnimatedStyle(() => {
     return {
@@ -122,12 +66,6 @@ const CirclePulse = () => {
   });
 
   useEffect(() => {
-    // 컴포넌트 마운트 시 기울기 애니메이션 시작
-    rotateX.value = withTiming(60, {
-      duration: 1500,
-      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-    });
-
     // 1.5초 후 텍스트 스타일 변경 애니메이션
     setTimeout(() => {
       locationOpacity.value = withTiming(0.3, {
@@ -138,7 +76,6 @@ const CirclePulse = () => {
         duration: 500,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
-      setShowMarkers(true);
     }, 2000);
   }, []);
 
@@ -150,61 +87,11 @@ const CirclePulse = () => {
 
   // 랜덤 마커 위치 생성
   useEffect(() => {
-    const generateRandomMarkers = () => {
-      const newMarkers: MarkerPosition[] = Array.from({ length: 5 }, () => ({
-        x: Math.random() * (screenWidth - 50),
-        y: Math.random() * (screenHeight * 0.9) + screenHeight * 0.8,                 
-      }));
-      setMarkers(newMarkers);     
-               
       // 5초 후 버튼 표시
       setTimeout(() => {
         setShowButton(true);
       }, 3500);
-    };
-
-    generateRandomMarkers();
   }, []);
-
-  React.useEffect(() => {
-    'worklet';
-    radius1.value = withTiming(
-      maxRadius,
-      { duration: firstCircleDuration }
-    );
-
-    radius2.value = withTiming(
-      maxRadius2,
-      { duration: secondCircleDuration }
-    );
-
-    opacity2.value = 0.9;
-    opacity2.value = withTiming(
-      0,
-      { duration: secondCircleDuration },
-      (finishedOpacity2) => {
-        if (finishedOpacity2) {
-          resetAndRestartAnimation();
-        }
-      }
-    );
-  }, [animationCounter]);
-
-  const animatedProps1 = useAnimatedProps(() => {
-    'worklet';
-    return {
-      r: radius1.value,
-      opacity: opacity1.value,
-    };
-  });
-
-  const animatedProps2 = useAnimatedProps(() => {
-    'worklet';
-    return {
-      r: radius2.value,
-      opacity: opacity2.value,
-    };
-  });
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -274,83 +161,6 @@ const CirclePulse = () => {
             )}
           </Animated.Text>
         </View>
-
-        {/* <Animated.View
-          style={[
-            styles.transformContainer,
-            {
-              width: screenWidth,
-              height: screenHeight,
-            },
-            animatedStyle
-          ]}
-        >
-          <Image
-            source={mapBackground}
-            style={[
-              styles.backgroundImage,
-              {
-                width: screenWidth * SCREEN_RATIO.MAP.SCALE,
-                height: screenHeight * SCREEN_RATIO.MAP.SCALE,
-                top: -screenHeight * SCREEN_RATIO.MAP.TOP_OFFSET,
-                left: -screenWidth * (SCREEN_RATIO.MAP.SCALE - 1) / 2,
-              }
-            ]}
-            resizeMode="cover"
-          />
-          <Svg
-            height={screenHeight}
-            width={screenWidth}
-            viewBox={`0 0 ${screenWidth} ${screenHeight}`}
-            style={{ zIndex: 1 }}
-          >
-            <AnimatedCircle
-              cx={centerX}
-              cy={centerY}
-              stroke="#c9c9c9"
-              strokeWidth="2"
-              fill="none"
-              animatedProps={animatedProps1}
-            />
-            <AnimatedCircle
-              cx={centerX}
-              cy={centerY}
-              stroke="#c9c9c9"
-              strokeWidth="2"
-              fill="none"
-              animatedProps={animatedProps2}
-            />
-          </Svg>
-        </Animated.View>
-
-        {showMarkers && markers.map((marker, index) => {
-          const adjustedY = marker.y * Math.cos(60 * Math.PI / 180);
-          return (
-            <View
-              key={`${index}-${marker.x}-${marker.y}`}
-              style={[
-                styles.marker,
-                {
-                  left: marker.x,
-                  top: adjustedY,
-                },
-              ]}
-            >
-              <MapPinIcon width={30} height={30} fill={colors.white} stroke={colors.secondary} />
-            </View>
-          );
-        })}
-
-        <View style={[styles.iconContainer, { left: iconLeft, bottom: iconBottom }]}>
-          <UserIcon
-            width={iconSize}
-            height={iconSize}
-            fill={colors.white}
-            stroke={colors.secondary}
-            strokeWidth={2}
-          />
-        </View> */}
-
         {showButton && (
           <TouchableOpacity 
             style={styles.button}
@@ -378,7 +188,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    height: screenHeight,
+    height: screenHeight * 0.9,
   },
   locationContainer: {
     position: 'absolute',

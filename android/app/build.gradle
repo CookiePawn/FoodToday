@@ -86,7 +86,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.templatecli"
+    namespace "com.foodtoday"
     defaultConfig {
         applicationId "com.foodtoday"
         minSdkVersion rootProject.ext.minSdkVersion

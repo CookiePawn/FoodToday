@@ -1,14 +1,15 @@
 import { MainStack } from '@/navigate';
-import { View } from 'react-native';
 import { useCheckVersion, useExitApp } from '@/hooks';
 import { CustomAlert } from '@/components';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const App = () => {
   const { alertVisible, handleUpdate, handleClose } = useCheckVersion();
   useExitApp();
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <MainStack />
       {alertVisible && (
         <CustomAlert
@@ -21,7 +22,8 @@ const App = () => {
           ]}
         />
       )}
-    </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

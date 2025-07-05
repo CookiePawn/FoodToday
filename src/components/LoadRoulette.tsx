@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Image, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
 import { Roulette1, Roulette2, Roulette3 } from '@/assets';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const LoadRoulette = () => {
     const spinValue = useRef(new Animated.Value(0)).current;
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: width,
-        height: height,
         position: 'absolute',
         top: 0,
         left: 0,
@@ -94,7 +93,6 @@ const styles = StyleSheet.create({
     },
     rouletteContainer: {
         width: width,
-        height: height,
     },
     imageContainer: {
         position: 'absolute',
